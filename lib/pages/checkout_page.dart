@@ -1,12 +1,17 @@
 import 'dart:ui';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
 import 'package:flutter_food_ordering/model/cart_model.dart';
 import 'package:flutter_food_ordering/model/food_model.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
+String token =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZGM3ZTdjOWY1MzdjODI0MjQ4N2IyNmMiLCJpYXQiOjE1NzMzODIwOTJ9.qPLSd8RI7BsNA6-QGQ2hEpvoS15lzRTT0GrL9kOZPdg';
 
 class CheckOutPage extends StatefulWidget {
   _CheckOutPageState createState() => _CheckOutPageState();
@@ -22,6 +27,27 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
 
   ScrollController scrollController = ScrollController();
   AnimationController animationController;
+
+  onCheckOutClick(MyCart cart) async {
+    try {
+      List<Map> data = List.generate(cart.cartItems.length, (index) {
+        return {"id": cart.cartItems[index].food.id, "quantity": cart.cartItems[index].quantity};
+      }).toList();
+
+      print(data.toString());
+
+      var response = await Dio().post('$BASE_URL/api/order/food', queryParameters: {"token": token}, data: data);
+      print(response.data);
+
+      if (response.data['status'] == 1) {
+        cart.clearCart();
+        Navigator.of(context).pop();
+      }
+    } catch (ex) {
+      print(ex.toString());
+    }
+  }
+
   @override
   void initState() {
     animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 200))..forward();
@@ -38,9 +64,14 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     var cart = Provider.of<MyCart>(context);
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: mainColor,
+        title: Text('CheckOut'),
+        centerTitle: true,
+        iconTheme: IconThemeData(color: Colors.black),
+        textTheme: TextTheme(title: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold)),
+      ),
       body: SingleChildScrollView(
-        controller: scrollController,
-        physics: BouncingScrollPhysics(),
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 16),
           child: Column(
@@ -69,23 +100,6 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
 
   List<Widget> buildHeader() {
     return [
-      SafeArea(
-        child: InkWell(
-          customBorder: StadiumBorder(),
-          onTap: () => Navigator.of(context).pop(),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Icon(Icons.arrow_back_ios),
-                SizedBox(width: 8),
-                Text('Back', style: TextStyle(fontSize: 16)),
-              ],
-            ),
-          ),
-        ),
-      ),
       Padding(
         padding: const EdgeInsets.only(top: 24.0),
         child: Text('Cart', style: headerStyle),
@@ -115,7 +129,8 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
         AnimatedBuilder(
           animation: animationController,
           builder: (context, child) {
-            return Text('\$ ${lerpDouble(oldTotal, total, animationController.value).toStringAsFixed(2)}', style: headerStyle);
+            return Text('\$ ${lerpDouble(oldTotal, total, animationController.value).toStringAsFixed(2)}',
+                style: headerStyle);
           },
         ),
       ],
@@ -129,8 +144,7 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
       child: RaisedButton(
         child: Text('Checkout', style: titleStyle),
         onPressed: () {
-          cart.clearCart();
-          Navigator.of(context).pop();
+          onCheckOutClick(cart);
         },
         padding: EdgeInsets.symmetric(horizontal: 64, vertical: 12),
         color: mainColor,
@@ -143,21 +157,23 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
     return Card(
       margin: EdgeInsets.only(bottom: 16),
       child: Container(
+        height: 100,
         padding: EdgeInsets.all(8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Flexible(
-              flex: 3,
-              fit: FlexFit.tight,
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(16)),
-                child: Image.network(cartModel.food.image),
+            ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(6)),
+              child: Image.network(
+                '$BASE_URL/uploads/${cartModel.food.images[0]}',
+                fit: BoxFit.cover,
+                width: 100,
+                height: 100,
               ),
             ),
             Flexible(
-              flex: 5,
+              flex: 3,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -166,7 +182,7 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
                     height: 45,
                     child: Text(
                       cartModel.food.name,
-                      style: subtitleStyle,
+                      style: titleStyle,
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -203,7 +219,7 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
               ),
             ),
             Flexible(
-              flex: 2,
+              flex: 1,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

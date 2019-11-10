@@ -1,11 +1,101 @@
+class FoodModel {
+  int status;
+  String message;
+  List<Food> foods;
+
+  FoodModel({
+    this.status,
+    this.message,
+    this.foods,
+  });
+
+  factory FoodModel.fromJson(Map<String, dynamic> json) => FoodModel(
+        status: json["status"],
+        message: json["message"],
+        foods: List<Food>.from(json["foods"].map((x) => Food.fromJson(x))),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "status": status,
+        "message": message,
+        "foods": List<dynamic>.from(foods.map((x) => x.toJson())),
+      };
+}
+
 class Food {
+  List<String> images;
+  String id;
   String name;
+  String description;
   double price;
-  double rate;
-  int rateCount;
-  String image;
-  FoodTypes foodType;
-  Food({this.name, this.price, this.image, this.rate, this.rateCount, this.foodType});
+  int rating;
+  Shop shop;
+  DateTime createdAt;
+  DateTime updatedAt;
+  int v;
+
+  Food({
+    this.images,
+    this.id,
+    this.name,
+    this.description,
+    this.price,
+    this.rating,
+    this.shop,
+    this.createdAt,
+    this.updatedAt,
+    this.v,
+  });
+
+  factory Food.fromJson(Map<String, dynamic> json) => Food(
+        images: List<String>.from(json["images"].map((x) => x)),
+        id: json["_id"],
+        name: json["name"],
+        description: json["description"],
+        price: json["price"].toDouble(),
+        rating: json["rating"],
+        shop: Shop.fromJson(json["shop"]),
+        createdAt: DateTime.parse(json["createdAt"]),
+        updatedAt: DateTime.parse(json["updatedAt"]),
+        v: json["__v"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "images": List<dynamic>.from(images.map((x) => x)),
+        "_id": id,
+        "name": name,
+        "description": description,
+        "price": price,
+        "rating": rating,
+        "shop": shop.toJson(),
+        "createdAt": createdAt.toIso8601String(),
+        "updatedAt": updatedAt.toIso8601String(),
+        "__v": v,
+      };
+}
+
+class Shop {
+  String id;
+  String name;
+  String email;
+
+  Shop({
+    this.id,
+    this.name,
+    this.email,
+  });
+
+  factory Shop.fromJson(Map<String, dynamic> json) => Shop(
+        id: json["_id"],
+        name: json["name"],
+        email: json["email"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "_id": id,
+        "name": name,
+        "email": email,
+      };
 }
 
 enum FoodTypes {
@@ -16,46 +106,3 @@ enum FoodTypes {
   Burger,
   Dessert,
 }
-
-List<Food> foods = [
-  Food(
-    name: 'Vegetable and Poached Egg',
-    price: 15,
-    rate: 3.0,
-    rateCount: 15,
-    image: 'https://keyassets-p2.timeincuk.net/wp/prod/wp-content/uploads/sites/53/2014/05/Poached-egg-and-bacon-salad-recipe-920x605.jpg',
-    foodType: FoodTypes.Salad,
-  ),
-  Food(
-    name: 'Avocado Salad With Mayonoise Soy Sauce',
-    price: 12.49,
-    rate: 2,
-    rateCount: 25,
-    image: 'https://natashaskitchen.com/wp-content/uploads/2015/06/Cucumber-tomato-avocado-salad-8.jpg',
-    foodType: FoodTypes.Salad,
-  ),
-  Food(
-    name: 'Pancake With Orange Sauce',
-    price: 9.99,
-    rate: 3,
-    rateCount: 67,
-    image: 'https://iowagirleats.com/wp-content/uploads/2013/01/OrangePancakes_02_mini.jpg',
-    foodType: FoodTypes.Salad,
-  ),
-  Food(
-    name: 'Vegetables Salad',
-    price: 7.49,
-    rate: 4,
-    rateCount: 29,
-    image: 'https://iowagirleats.com/wp-content/uploads/2016/06/Marinated-Vegetable-Salad-iowagirleats-03.jpg',
-    foodType: FoodTypes.Salad,
-  ),
-  Food(
-    name: 'Pineapple Pizza',
-    price: 22.99,
-    rate: 5,
-    rateCount: 102,
-    image: 'https://verytasty.us/assets/uploads/2018/07/shutterstock_84904861-750x500.jpg',
-    foodType: FoodTypes.Pizza,
-  ),
-];

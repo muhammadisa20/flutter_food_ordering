@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
 import 'package:flutter_food_ordering/model/cart_model.dart';
@@ -14,6 +15,19 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int value = 1;
 
+  Future<FoodModel> foodModels;
+
+  Future<FoodModel> fetchAllFoods() async {
+    try {
+      var response = await Dio().get('$BASE_URL/api/foods');
+      print(response.data['status']);
+      return FoodModel.fromJson(response.data);
+    } on DioError catch (e) {
+      print(e.message);
+      return null;
+    }
+  }
+
   showCart() {
     showModalBottomSheet(
       shape: roundedRectangle40,
@@ -23,8 +37,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
+  void initState() {
+    foodModels = fetchAllFoods();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    print('rebuild');
     return Scaffold(
       body: Container(
         margin: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
@@ -101,18 +120,29 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget buildFoodList() {
-    return Expanded(
-      child: GridView.count(
-        //itemCount: foods.length,
-        childAspectRatio: 0.65,
-        mainAxisSpacing: 4,
-        crossAxisSpacing: 4,
-        crossAxisCount: 2,
-        physics: BouncingScrollPhysics(),
-        children: foods.map((food) {
-          return FoodCard(food);
-        }).toList(),
-      ),
-    );
+    return FutureBuilder<FoodModel>(
+        future: foodModels,
+        builder: (BuildContext context, snapshot) {
+          if (snapshot.hasData) {
+            if (snapshot.data != null) {
+              return Expanded(
+                child: GridView.count(
+                  //itemCount: foods.length,
+                  childAspectRatio: 0.65,
+                  mainAxisSpacing: 4,
+                  crossAxisSpacing: 4,
+                  crossAxisCount: 2,
+                  physics: BouncingScrollPhysics(),
+                  children: snapshot.data.foods.map((food) {
+                    return FoodCard(food);
+                  }).toList(),
+                ),
+              );
+            } else {
+              return CircularProgressIndicator();
+            }
+          }
+          return Center(child: CircularProgressIndicator());
+        });
   }
 }

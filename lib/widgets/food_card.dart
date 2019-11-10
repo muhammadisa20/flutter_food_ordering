@@ -41,21 +41,26 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
   }
 
   Widget buildImage() {
-    return ClipRRect(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-      child: Image.network(
-        food.image,
-        fit: BoxFit.fill,
-        height: MediaQuery.of(context).size.height / 6,
-        loadingBuilder: (context, Widget child, ImageChunkEvent progress) {
-          if (progress == null) return child;
-          return Center(
-            child: Padding(
-              padding: EdgeInsets.all(32),
-              child: CircularProgressIndicator(value: progress.expectedTotalBytes != null ? progress.cumulativeBytesLoaded / progress.expectedTotalBytes : null),
-            ),
-          );
-        },
+    return Container(
+      height: MediaQuery.of(context).size.width / 2.5,
+      child: ClipRRect(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+        child: Image.network(
+          '$BASE_URL/uploads/${food.images[0]}',
+          fit: BoxFit.cover,
+          loadingBuilder: (context, Widget child, ImageChunkEvent progress) {
+            if (progress == null) return child;
+            return Center(
+              child: Padding(
+                padding: EdgeInsets.all(32),
+                child: CircularProgressIndicator(
+                    value: progress.expectedTotalBytes != null
+                        ? progress.cumulativeBytesLoaded / progress.expectedTotalBytes
+                        : null),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -63,11 +68,22 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
   Widget buildTitle() {
     return Container(
       padding: const EdgeInsets.only(left: 8, right: 8),
-      child: Text(
-        food.name,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-        style: titleStyle,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            food.name,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: titleStyle,
+          ),
+          Text(
+            food.description,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: infoStyle,
+          ),
+        ],
       ),
     );
   }
@@ -80,7 +96,7 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           RatingBar(
-            initialRating: food.rate,
+            initialRating: 5.0,
             direction: Axis.horizontal,
             itemCount: 5,
             itemSize: 14,
@@ -90,7 +106,7 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
             itemBuilder: (context, index) => Icon(Icons.star, color: mainColor),
             onRatingUpdate: (rating) {},
           ),
-          Text('(${food.rateCount})'),
+          Text('(${food.rating.toDouble()})'),
         ],
       ),
     );
