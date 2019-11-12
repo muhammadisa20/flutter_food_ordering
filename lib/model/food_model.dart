@@ -3,23 +3,13 @@ class FoodModel {
   String message;
   List<Food> foods;
 
-  FoodModel({
-    this.status,
-    this.message,
-    this.foods,
-  });
+  FoodModel({this.status, this.message, this.foods});
 
   factory FoodModel.fromJson(Map<String, dynamic> json) => FoodModel(
         status: json["status"],
         message: json["message"],
         foods: List<Food>.from(json["foods"].map((x) => Food.fromJson(x))),
       );
-
-  Map<String, dynamic> toJson() => {
-        "status": status,
-        "message": message,
-        "foods": List<dynamic>.from(foods.map((x) => x.toJson())),
-      };
 }
 
 class Food {
@@ -59,19 +49,6 @@ class Food {
         updatedAt: DateTime.parse(json["updatedAt"]),
         v: json["__v"],
       );
-
-  Map<String, dynamic> toJson() => {
-        "images": List<dynamic>.from(images.map((x) => x)),
-        "_id": id,
-        "name": name,
-        "description": description,
-        "price": price,
-        "rating": rating,
-        "shop": shop.toJson(),
-        "createdAt": createdAt.toIso8601String(),
-        "updatedAt": updatedAt.toIso8601String(),
-        "__v": v,
-      };
 }
 
 class Shop {
@@ -79,29 +56,19 @@ class Shop {
   String name;
   String email;
 
-  Shop({
-    this.id,
-    this.name,
-    this.email,
-  });
+  Shop({this.id, this.name, this.email});
 
   factory Shop.fromJson(Map<String, dynamic> json) => Shop(
         id: json["_id"],
         name: json["name"],
         email: json["email"],
       );
-
-  Map<String, dynamic> toJson() => {
-        "_id": id,
-        "name": name,
-        "email": email,
-      };
 }
 
 enum FoodTypes {
-  Salad,
+  StreetFood,
   All,
-  Pizza,
+  Coffee,
   Asian,
   Burger,
   Dessert,

@@ -2,16 +2,12 @@ import 'dart:ui';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as prefix0;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
 import 'package:flutter_food_ordering/model/cart_model.dart';
-import 'package:flutter_food_ordering/model/food_model.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
-String token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZGM3ZTdjOWY1MzdjODI0MjQ4N2IyNmMiLCJpYXQiOjE1NzMzODIwOTJ9.qPLSd8RI7BsNA6-QGQ2hEpvoS15lzRTT0GrL9kOZPdg';
+import 'package:toast/toast.dart';
 
 class CheckOutPage extends StatefulWidget {
   _CheckOutPageState createState() => _CheckOutPageState();
@@ -34,14 +30,14 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
         return {"id": cart.cartItems[index].food.id, "quantity": cart.cartItems[index].quantity};
       }).toList();
 
-      print(data.toString());
-
       var response = await Dio().post('$BASE_URL/api/order/food', queryParameters: {"token": token}, data: data);
       print(response.data);
 
       if (response.data['status'] == 1) {
         cart.clearCart();
         Navigator.of(context).pop();
+      } else {
+        Toast.show(response.data['message'], context);
       }
     } catch (ex) {
       print(ex.toString());

@@ -3,6 +3,7 @@ import 'package:flutter_food_ordering/constants/values.dart';
 import 'package:flutter_food_ordering/main.dart';
 import 'package:flutter_food_ordering/model/cart_model.dart';
 import 'package:flutter_food_ordering/model/food_model.dart';
+import 'package:flutter_food_ordering/widgets/cart_bottom_sheet.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 
@@ -26,14 +27,29 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
     return Container(
       child: Card(
         shape: roundedRectangle12,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Stack(
           children: <Widget>[
-            buildImage(),
-            buildTitle(),
-            buildRating(),
-            buildPriceInfo(),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                buildImage(),
+                buildTitle(),
+                buildRating(),
+                buildPriceInfo(),
+              ],
+            ),
+            Align(
+              alignment: Alignment.topRight,
+              child: Container(
+                padding: EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: mainColor,
+                  borderRadius: BorderRadius.only(topRight: Radius.circular(12)),
+                ),
+                child: Text(food.shop.name),
+              ),
+            )
           ],
         ),
       ),
@@ -106,7 +122,7 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
             itemBuilder: (context, index) => Icon(Icons.star, color: mainColor),
             onRatingUpdate: (rating) {},
           ),
-          Text('(${food.rating.toDouble()})'),
+          Text('(${food.rating})'),
         ],
       ),
     );
@@ -142,9 +158,21 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
   addItemToCard() {
     final snackBar = SnackBar(
       content: Text('${food.name} added to cart'),
-      duration: Duration(milliseconds: 500),
+      action: SnackBarAction(
+        label: 'view',
+        onPressed: showCart,
+      ),
+      duration: Duration(milliseconds: 1500),
     );
     Scaffold.of(context).showSnackBar(snackBar);
     Provider.of<MyCart>(context).addItem(CartItem(food: food, quantity: 1));
+  }
+
+  showCart() {
+    showModalBottomSheet(
+      shape: roundedRectangle40,
+      context: context,
+      builder: (context) => CartBottomSheet(),
+    );
   }
 }

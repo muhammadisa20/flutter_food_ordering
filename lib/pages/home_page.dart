@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
 import 'package:flutter_food_ordering/model/cart_model.dart';
 import 'package:flutter_food_ordering/model/food_model.dart';
+import 'package:flutter_food_ordering/pages/user_profile.dart';
 import 'package:flutter_food_ordering/widgets/cart_bottom_sheet.dart';
 import 'package:flutter_food_ordering/widgets/food_card.dart';
 import 'package:provider/provider.dart';
@@ -18,13 +21,20 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<FoodModel> foodModels;
 
   Future<FoodModel> fetchAllFoods() async {
+    var dio = Dio();
+    dio.options.connectTimeout = 5000;
+    print('krappa');
     try {
-      var response = await Dio().get('$BASE_URL/api/foods');
-      print(response.data['status']);
+      var response = await dio.get('$BASE_URL/api/foods');
       return FoodModel.fromJson(response.data);
-    } on DioError catch (e) {
-      print(e.message);
-      return null;
+    } catch (e) {
+      if (e is DioError) {
+        print("Dio Error: " + e.message);
+        throw SocketException(e.message);
+      } else {
+        print("Type error: " + e.toString());
+        throw Exception(e.toString());
+      }
     }
   }
 
@@ -33,6 +43,12 @@ class _MyHomePageState extends State<MyHomePage> {
       shape: roundedRectangle40,
       context: context,
       builder: (context) => CartBottomSheet(),
+    );
+  }
+
+  viewProfile() {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => UserProfilePage()),
     );
   }
 
@@ -69,7 +85,12 @@ class _MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           Text('MENU', style: headerStyle),
           Spacer(),
-          IconButton(icon: Icon(Icons.search), onPressed: () {}),
+          IconButton(icon: Icon(Icons.person), onPressed: viewProfile),
+          IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: () {
+                foodModels = fetchAllFoods();
+              }),
           Stack(
             children: <Widget>[
               IconButton(icon: Icon(Icons.shopping_cart), onPressed: showCart),
@@ -120,29 +141,27 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget buildFoodList() {
-    return FutureBuilder<FoodModel>(
+    return Expanded(
+      child: FutureBuilder<FoodModel>(
         future: foodModels,
         builder: (BuildContext context, snapshot) {
           if (snapshot.hasData) {
-            if (snapshot.data != null) {
-              return Expanded(
-                child: GridView.count(
-                  //itemCount: foods.length,
-                  childAspectRatio: 0.65,
-                  mainAxisSpacing: 4,
-                  crossAxisSpacing: 4,
-                  crossAxisCount: 2,
-                  physics: BouncingScrollPhysics(),
-                  children: snapshot.data.foods.map((food) {
-                    return FoodCard(food);
-                  }).toList(),
-                ),
-              );
-            } else {
-              return CircularProgressIndicator();
-            }
+            return GridView.count(
+              childAspectRatio: 0.65,
+              mainAxisSpacing: 4,
+              crossAxisSpacing: 4,
+              crossAxisCount: 2,
+              physics: BouncingScrollPhysics(),
+              children: snapshot.data.foods.map((food) {
+                return FoodCard(food);
+              }).toList(),
+            );
+          } else if (snapshot.hasError) {
+            return Center(child: Text(snapshot.error.toString()));
           }
           return Center(child: CircularProgressIndicator());
-        });
+        },
+      ),
+    );
   }
 }
