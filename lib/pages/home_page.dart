@@ -90,6 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
               icon: Icon(Icons.refresh),
               onPressed: () {
                 foodModels = fetchAllFoods();
+                setState(() {});
               }),
           Stack(
             children: <Widget>[

@@ -15,7 +15,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
   Future<Response> fetchUserData() async {
     try {
-      var response = await Dio().get('$BASE_URL/api/user/info/5dc917096e1c39409c4534c7');
+      var response = await Dio().get('$BASE_URL/api/user/info/$userId');
       if (response.data['status'] == 1) {
         return response;
       } else {
