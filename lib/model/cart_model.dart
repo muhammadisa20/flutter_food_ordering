@@ -5,17 +5,21 @@ class MyCart extends ChangeNotifier {
   List<CartItem> items = [];
   List<CartItem> get cartItems => items;
 
-  void addItem(CartItem cartItem) {
+  bool addItem(CartItem cartItem) {
     for (CartItem cart in cartItems) {
+      if (cartItem.food.shop.id != cart.food.shop.id) {
+        return false;
+      }
       if (cartItem.food.name == cart.food.name) {
         cartItems[cartItems.indexOf(cart)].quantity++;
         notifyListeners();
-        return;
+        return true;
       }
     }
-    
+
     items.add(cartItem);
     notifyListeners();
+    return true;
   }
 
   void clearCart() {

@@ -69,10 +69,7 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
             return Center(
               child: Padding(
                 padding: EdgeInsets.all(32),
-                child: CircularProgressIndicator(
-                    value: progress.expectedTotalBytes != null
-                        ? progress.cumulativeBytesLoaded / progress.expectedTotalBytes
-                        : null),
+                child: CircularProgressIndicator(value: progress.expectedTotalBytes != null ? progress.cumulativeBytesLoaded / progress.expectedTotalBytes : null),
               ),
             );
           },
@@ -156,16 +153,25 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
   }
 
   addItemToCard() {
-    final snackBar = SnackBar(
-      content: Text('${food.name} added to cart'),
-      action: SnackBarAction(
-        label: 'view',
-        onPressed: showCart,
-      ),
-      duration: Duration(milliseconds: 1500),
-    );
-    Scaffold.of(context).showSnackBar(snackBar);
-    Provider.of<MyCart>(context).addItem(CartItem(food: food, quantity: 1));
+    bool isAddSuccess = Provider.of<MyCart>(context).addItem(CartItem(food: food, quantity: 1));
+
+    if (isAddSuccess) {
+      final snackBar = SnackBar(
+        content: Text('${food.name} added to cart'),
+        action: SnackBarAction(
+          label: 'view',
+          onPressed: showCart,
+        ),
+        duration: Duration(milliseconds: 1500),
+      );
+      Scaffold.of(context).showSnackBar(snackBar);
+    } else {
+      final snackBar = SnackBar(
+        content: Text('You can\'t order from multiple shop at the same time'),
+        duration: Duration(milliseconds: 1500),
+      );
+      Scaffold.of(context).showSnackBar(snackBar);
+    }
   }
 
   showCart() {
