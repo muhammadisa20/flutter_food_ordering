@@ -16,6 +16,7 @@ dependencies:
   intl: ^0.15.8
   dio: ^3.0.4
   toast: ^0.1.5
+  get_it: ^3.0.3
 
 dev_dependencies:
   flutter_test:

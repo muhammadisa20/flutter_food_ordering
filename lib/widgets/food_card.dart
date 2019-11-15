@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
-import 'package:flutter_food_ordering/main.dart';
-import 'package:flutter_food_ordering/notifier/cart_model.dart';
 import 'package:flutter_food_ordering/model/foods_response.dart';
+import 'package:flutter_food_ordering/viewmodels/cart_viewmodel.dart';
 import 'package:flutter_food_ordering/widgets/cart_bottom_sheet.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
@@ -156,7 +155,7 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
   }
 
   addItemToCard() {
-    bool isAddSuccess = Provider.of<MyCart>(context).addItem(CartItem(food: food, quantity: 1));
+    bool isAddSuccess = Provider.of<MyCartViewModel>(context).addItem(CartItem(food: food, quantity: 1));
 
     if (isAddSuccess) {
       final snackBar = SnackBar(

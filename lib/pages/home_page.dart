@@ -1,14 +1,14 @@
 import 'dart:async';
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
-import 'package:flutter_food_ordering/notifier/cart_model.dart';
 import 'package:flutter_food_ordering/model/foods_response.dart';
 import 'package:flutter_food_ordering/pages/user_profile.dart';
 import 'package:flutter_food_ordering/resources/api_provider.dart';
+import 'package:flutter_food_ordering/viewmodels/base_model.dart';
+import 'package:flutter_food_ordering/viewmodels/cart_viewmodel.dart';
+import 'package:flutter_food_ordering/viewmodels/food_viewmodels.dart';
 import 'package:flutter_food_ordering/widgets/cart_bottom_sheet.dart';
+import 'package:flutter_food_ordering/widgets/center_loading.dart';
 import 'package:flutter_food_ordering/widgets/food_card.dart';
 import 'package:provider/provider.dart';
 
@@ -19,20 +19,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int value = 1;
-
-  Future<FoodResponse> foodModels;
-  StreamController<FoodResponse> streamController = StreamController();
-  ApiProvider apiProvider = ApiProvider();
-
-  onInitData() async {
-    try {
-      streamController.add(null);
-      FoodResponse foodModel = await apiProvider.fetchAllFoods();
-      streamController.add(foodModel);
-    } catch (e) {
-      streamController.addError('${e.toString()}');
-    }
-  }
+  var foodViewModel;
 
   showCart() {
     showModalBottomSheet(
@@ -50,28 +37,46 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    onInitData();
     super.initState();
   }
 
   @override
   void dispose() {
-    streamController.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-        child: Column(
-          children: <Widget>[
-            buildAppBar(),
-            buildFoodFilter(),
-            Divider(),
-            buildFoodList(),
-          ],
+    return ChangeNotifierProvider(
+      builder: (context) => FoodViewModel(),
+      child: Scaffold(
+        body: Container(
+          margin: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+          child: Column(
+            children: <Widget>[
+              buildAppBar(),
+              buildFoodFilter(),
+              Divider(),
+              Consumer<FoodViewModel>(
+                builder: (context, food, child) {
+                  foodViewModel = food;
+                  switch (food.state) {
+                    case ViewState.error:
+                      return CenterLoadingError(Text(food.errorMessage));
+                      break;
+                    case ViewState.loading:
+                      return CenterLoadingError(CircularProgressIndicator());
+                      break;
+                    case ViewState.ready:
+                      return buildFoodList(food.foodResponse);
+                      break;
+                    default:
+                      return Container();
+                  }
+                },
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -79,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget buildAppBar() {
     int items = 0;
-    Provider.of<MyCart>(context).cartItems.forEach((cart) {
+    Provider.of<MyCartViewModel>(context).cartItems.forEach((cart) {
       items += cart.quantity;
     });
     return SafeArea(
@@ -88,11 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Text('MENU', style: headerStyle),
           Spacer(),
           IconButton(icon: Icon(Icons.person), onPressed: viewProfile),
-          IconButton(
-              icon: Icon(Icons.refresh),
-              onPressed: () {
-                onInitData();
-              }),
+          IconButton(icon: Icon(Icons.refresh), onPressed: () => foodViewModel.getAllFoods()),
           Stack(
             children: <Widget>[
               IconButton(icon: Icon(Icons.shopping_cart), onPressed: showCart),
@@ -142,27 +143,18 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget buildFoodList() {
+  Widget buildFoodList(FoodResponse foodResponse) {
     return Expanded(
-      child: StreamBuilder<FoodResponse>(
-        stream: streamController.stream,
-        builder: (BuildContext context, snapshot) {
-          if (snapshot.hasData) {
-            return GridView.count(
-              childAspectRatio: 0.65,
-              mainAxisSpacing: 4,
-              crossAxisSpacing: 4,
-              crossAxisCount: 2,
-              physics: BouncingScrollPhysics(),
-              children: snapshot.data.foods.map((food) {
-                return FoodCard(food);
-              }).toList(),
-            );
-          } else if (snapshot.hasError) {
-            return Center(child: Text(snapshot.error.toString()));
-          }
-          return Center(child: CircularProgressIndicator());
-        },
+      child: GridView.count(
+        childAspectRatio: 0.65,
+        mainAxisSpacing: 4,
+        crossAxisSpacing: 4,
+        shrinkWrap: true,
+        crossAxisCount: 2,
+        physics: BouncingScrollPhysics(),
+        children: foodResponse.foods.map((food) {
+          return FoodCard(food);
+        }).toList(),
       ),
     );
   }

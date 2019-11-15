@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
-import 'package:flutter_food_ordering/notifier/cart_model.dart';
+import 'package:flutter_food_ordering/viewmodels/cart_viewmodel.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
@@ -24,7 +24,7 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
   ScrollController scrollController = ScrollController();
   AnimationController animationController;
 
-  onCheckOutClick(MyCart cart) async {
+  onCheckOutClick(MyCartViewModel cart) async {
     try {
       List<Map> data = List.generate(cart.cartItems.length, (index) {
         return {"id": cart.cartItems[index].food.id, "quantity": cart.cartItems[index].quantity};
@@ -58,7 +58,7 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    var cart = Provider.of<MyCart>(context);
+    var cart = Provider.of<MyCartViewModel>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: mainColor,
@@ -111,7 +111,7 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
     ];
   }
 
-  Widget buildPriceInfo(MyCart cart) {
+  Widget buildPriceInfo(MyCartViewModel cart) {
     oldTotal = total;
     total = 0;
     for (CartItem cart in cart.cartItems) {
@@ -133,7 +133,7 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
     );
   }
 
-  Widget checkoutButton(MyCart cart, context) {
+  Widget checkoutButton(MyCartViewModel cart, context) {
     return Container(
       margin: EdgeInsets.only(top: 24, bottom: 64),
       width: double.infinity,
@@ -149,7 +149,7 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
     );
   }
 
-  Widget buildCartItemList(MyCart cart, CartItem cartModel) {
+  Widget buildCartItemList(MyCartViewModel cart, CartItem cartModel) {
     return Card(
       margin: EdgeInsets.only(bottom: 16),
       child: Container(

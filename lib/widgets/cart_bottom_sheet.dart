@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
-import 'package:flutter_food_ordering/notifier/cart_model.dart';
-import 'package:flutter_food_ordering/model/foods_response.dart';
 import 'package:flutter_food_ordering/pages/checkout_page.dart';
+import 'package:flutter_food_ordering/viewmodels/cart_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class CartBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    MyCart cart = Provider.of<MyCart>(context);
+    MyCartViewModel cart = Provider.of<MyCartViewModel>(context);
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -56,7 +55,7 @@ class CartBottomSheet extends StatelessWidget {
     );
   }
 
-  Widget buildItemsList(MyCart cart) {
+  Widget buildItemsList(MyCartViewModel cart) {
     return Expanded(
       child: ListView.builder(
         itemCount: cart.cartItems.length,
@@ -93,7 +92,7 @@ class CartBottomSheet extends StatelessWidget {
     );
   }
 
-  Widget buildPriceInfo(MyCart cart) {
+  Widget buildPriceInfo(MyCartViewModel cart) {
     double total = 0;
     for (CartItem cartModel in cart.cartItems) {
       total += cartModel.food.price * cartModel.quantity;

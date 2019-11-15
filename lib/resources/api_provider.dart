@@ -9,7 +9,7 @@ class ApiProvider {
     var dio = Dio()..options.connectTimeout = 10000;
     Response response;
     try {
-      response = await dio.get('$BASE_URL/api/foodss');
+      response = await dio.get('$BASE_URL/api/foods');
       if (response.data['status'] == 1) {
         return FoodResponse.fromJson(response.data);
       } else {
