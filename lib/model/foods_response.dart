@@ -1,11 +1,11 @@
-class FoodModel {
+class FoodResponse {
   int status;
   String message;
   List<Food> foods;
 
-  FoodModel({this.status, this.message, this.foods});
+  FoodResponse({this.status, this.message, this.foods});
 
-  factory FoodModel.fromJson(Map<String, dynamic> json) => FoodModel(
+  factory FoodResponse.fromJson(Map<String, dynamic> json) => FoodResponse(
         status: json["status"],
         message: json["message"],
         foods: List<Food>.from(json["foods"].map((x) => Food.fromJson(x))),

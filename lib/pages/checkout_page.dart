@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
-import 'package:flutter_food_ordering/model/cart_model.dart';
+import 'package:flutter_food_ordering/notifier/cart_model.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';

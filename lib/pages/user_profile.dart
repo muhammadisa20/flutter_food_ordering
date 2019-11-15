@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
-import 'package:flutter_food_ordering/model/order_model.dart';
+import 'package:flutter_food_ordering/model/order_response.dart';
+import 'package:flutter_food_ordering/model/user_response.dart';
+import 'package:flutter_food_ordering/resources/api_provider.dart';
 import 'package:intl/intl.dart';
 
 class UserProfilePage extends StatefulWidget {
@@ -10,41 +12,14 @@ class UserProfilePage extends StatefulWidget {
 }
 
 class _UserProfilePageState extends State<UserProfilePage> {
-  Future<Response> user;
-  Future<OrderModel> orders;
-
-  Future<Response> fetchUserData() async {
-    try {
-      var response = await Dio().get('$BASE_URL/api/user/info/$userId');
-      if (response.data['status'] == 1) {
-        return response;
-      } else {
-        throw Exception(response.data['message']);
-      }
-    } on DioError catch (ex) {
-      print('Dio error: ' + ex.message);
-      throw Exception(ex.toString());
-    }
-  }
-
-  Future<OrderModel> fetchUserOrderHistory() async {
-    try {
-      var response = await Dio().get('$BASE_URL/api/order/user', queryParameters: {"token": token});
-      if (response.data['status'] == 1) {
-        return OrderModel.fromJson(response.data);
-      } else {
-        return null;
-      }
-    } catch (ex) {
-      print(ex.toString());
-      return null;
-    }
-  }
+  ApiProvider apiProvider = ApiProvider();
+  Future<UserResponse> user;
+  Future<OrderResponse> orders;
 
   @override
   void initState() {
-    user = fetchUserData();
-    orders = fetchUserOrderHistory();
+    user = apiProvider.fetchUserData();
+    orders = apiProvider.fetchUserOrderHistory();
     super.initState();
   }
 
@@ -61,13 +36,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            FutureBuilder<Response>(
+            FutureBuilder<UserResponse>(
               future: user,
-              builder: (BuildContext context, AsyncSnapshot<Response> snapshot) {
+              builder: (BuildContext context, AsyncSnapshot<UserResponse> snapshot) {
                 if (snapshot.hasData) {
                   return buildProfile(snapshot.data);
                 } else if (snapshot.hasError) {
-                  return Text('Error getting data');
+                  return Text(snapshot.error.toString());
                 }
                 return Center(child: CircularProgressIndicator());
               },
@@ -80,7 +55,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 
-  Widget buildProfile(Response response) {
+  Widget buildProfile(UserResponse userResponse) {
     return Container(
       padding: EdgeInsets.all(12),
       child: Column(
@@ -91,7 +66,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
-                image: NetworkImage('$BASE_URL/uploads/${response.data['user']['profile_img']}'),
+                image: NetworkImage('$BASE_URL/uploads/${userResponse.user.profileImg}'),
               ),
             ),
           ),
@@ -100,21 +75,21 @@ class _UserProfilePageState extends State<UserProfilePage> {
             child: ListTile(
               leading: Icon(Icons.person),
               title: Text('Name'),
-              subtitle: Text(response.data['user']['name']),
+              subtitle: Text(userResponse.user.name),
             ),
           ),
           Card(
             child: ListTile(
               leading: Icon(Icons.email),
               title: Text('Email'),
-              subtitle: Text(response.data['user']['email']),
+              subtitle: Text(userResponse.user.email),
             ),
           ),
           Card(
             child: ListTile(
               leading: Icon(Icons.call),
               title: Text('Phone Number'),
-              subtitle: Text(response.data['user']['phone_number']),
+              subtitle: Text(userResponse.user.phoneNumber),
             ),
           ),
         ],
@@ -123,9 +98,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 
   Widget buildUserOrderHistoryList() {
-    return FutureBuilder<OrderModel>(
+    return FutureBuilder<OrderResponse>(
       future: orders,
-      builder: (BuildContext context, AsyncSnapshot<OrderModel> snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<OrderResponse> snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
             primary: false,

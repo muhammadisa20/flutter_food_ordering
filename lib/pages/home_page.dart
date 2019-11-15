@@ -1,11 +1,13 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
-import 'package:flutter_food_ordering/model/cart_model.dart';
-import 'package:flutter_food_ordering/model/food_model.dart';
+import 'package:flutter_food_ordering/notifier/cart_model.dart';
+import 'package:flutter_food_ordering/model/foods_response.dart';
 import 'package:flutter_food_ordering/pages/user_profile.dart';
+import 'package:flutter_food_ordering/resources/api_provider.dart';
 import 'package:flutter_food_ordering/widgets/cart_bottom_sheet.dart';
 import 'package:flutter_food_ordering/widgets/food_card.dart';
 import 'package:provider/provider.dart';
@@ -18,23 +20,17 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int value = 1;
 
-  Future<FoodModel> foodModels;
+  Future<FoodResponse> foodModels;
+  StreamController<FoodResponse> streamController = StreamController();
+  ApiProvider apiProvider = ApiProvider();
 
-  Future<FoodModel> fetchAllFoods() async {
-    var dio = Dio();
-    dio.options.connectTimeout = 5000;
-    print('krappa');
+  onInitData() async {
     try {
-      var response = await dio.get('$BASE_URL/api/foods');
-      return FoodModel.fromJson(response.data);
+      streamController.add(null);
+      FoodResponse foodModel = await apiProvider.fetchAllFoods();
+      streamController.add(foodModel);
     } catch (e) {
-      if (e is DioError) {
-        print("Dio Error: " + e.message);
-        throw SocketException(e.message);
-      } else {
-        print("Type error: " + e.toString());
-        throw Exception(e.toString());
-      }
+      streamController.addError('${e.toString()}');
     }
   }
 
@@ -54,8 +50,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    foodModels = fetchAllFoods();
+    onInitData();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    streamController.close();
+    super.dispose();
   }
 
   @override
@@ -89,8 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
           IconButton(
               icon: Icon(Icons.refresh),
               onPressed: () {
-                foodModels = fetchAllFoods();
-                setState(() {});
+                onInitData();
               }),
           Stack(
             children: <Widget>[
@@ -143,8 +144,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget buildFoodList() {
     return Expanded(
-      child: FutureBuilder<FoodModel>(
-        future: foodModels,
+      child: StreamBuilder<FoodResponse>(
+        stream: streamController.stream,
         builder: (BuildContext context, snapshot) {
           if (snapshot.hasData) {
             return GridView.count(

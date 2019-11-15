@@ -1,15 +1,15 @@
-class OrderModel {
+class OrderResponse {
   int status;
   String message;
   List<Order> order;
 
-  OrderModel({
+  OrderResponse({
     this.status,
     this.message,
     this.order,
   });
 
-  factory OrderModel.fromJson(Map<String, dynamic> json) => OrderModel(
+  factory OrderResponse.fromJson(Map<String, dynamic> json) => OrderResponse(
         status: json["status"],
         message: json["message"],
         order: List<Order>.from(json["order"].map((x) => Order.fromJson(x))),

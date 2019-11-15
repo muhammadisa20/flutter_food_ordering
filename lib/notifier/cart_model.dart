@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_food_ordering/model/food_model.dart';
+import 'package:flutter_food_ordering/model/foods_response.dart';
 
 class MyCart extends ChangeNotifier {
   List<CartItem> items = [];

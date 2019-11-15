@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
-import 'package:flutter_food_ordering/model/cart_model.dart';
-import 'package:flutter_food_ordering/model/food_model.dart';
+import 'package:flutter_food_ordering/notifier/cart_model.dart';
+import 'package:flutter_food_ordering/model/foods_response.dart';
 import 'package:flutter_food_ordering/pages/checkout_page.dart';
 import 'package:provider/provider.dart';
 
