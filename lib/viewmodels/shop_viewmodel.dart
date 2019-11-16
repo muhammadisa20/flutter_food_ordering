@@ -1,17 +1,18 @@
 import 'package:flutter_food_ordering/model/foods_response.dart';
+import 'package:flutter_food_ordering/model/shop_response.dart' as prefix0;
 import 'package:flutter_food_ordering/viewmodels/base_model.dart';
 
-class FoodViewModel extends BaseViewModel {
-  FoodResponse foodResponse;
+class ShopViewModel extends BaseViewModel {
+  prefix0.ShopResponse shopResponse;
 
-  FoodViewModel() {
-    getAllFoods();
+  ShopViewModel() {
+    getAllShops();
   }
 
-  void getAllFoods() async {
+  void getAllShops() async {
     setState(ViewState.loading);
     try {
-      foodResponse = await apiProvider.fetchAllFoods();
+      shopResponse = await apiProvider.fetchAllShops();
       setState(ViewState.ready);
       notifyListeners();
     } catch (e) {

@@ -4,6 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
+import 'package:flutter_food_ordering/main.dart';
+import 'package:flutter_food_ordering/resources/api_provider.dart';
 import 'package:flutter_food_ordering/viewmodels/cart_viewmodel.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -20,28 +22,23 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
   get month => DateFormat('MMMM').format(now);
   double oldTotal = 0;
   double total = 0;
+  ValueNotifier<bool> isLoading = ValueNotifier(false);
 
   ScrollController scrollController = ScrollController();
   AnimationController animationController;
+  ApiProvider apiProvider = getIt<ApiProvider>();
 
   onCheckOutClick(MyCartViewModel cart) async {
-    try {
-      List<Map> data = List.generate(cart.cartItems.length, (index) {
-        return {"id": cart.cartItems[index].food.id, "quantity": cart.cartItems[index].quantity};
-      }).toList();
-
-      var response = await Dio().post('$BASE_URL/api/order/food', queryParameters: {"token": token}, data: data);
-      print(response.data);
-
-      if (response.data['status'] == 1) {
-        cart.clearCart();
-        Navigator.of(context).pop();
-      } else {
-        Toast.show(response.data['message'], context);
+    isLoading.value = true;
+    apiProvider.orderFood(cart).then((success) {
+      if (success) {
+        Navigator.pop(context);
       }
-    } catch (ex) {
-      print(ex.toString());
-    }
+      isLoading.value = false;
+    }).catchError((err) {
+      isLoading.value = false;
+      Toast.show(err.toString(), context);
+    });
   }
 
   @override
@@ -138,7 +135,19 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
       margin: EdgeInsets.only(top: 24, bottom: 64),
       width: double.infinity,
       child: RaisedButton(
-        child: Text('Checkout', style: titleStyle),
+        child: ValueListenableBuilder(
+          valueListenable: isLoading,
+          builder: (context, loading, child) {
+            return loading
+                ? SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(strokeWidth: 3),
+                  )
+                : child;
+          },
+          child: Text('Checkout', style: titleStyle),
+        ),
         onPressed: () {
           onCheckOutClick(cart);
         },

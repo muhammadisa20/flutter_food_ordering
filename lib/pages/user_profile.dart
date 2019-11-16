@@ -4,52 +4,59 @@ import 'package:flutter_food_ordering/constants/values.dart';
 import 'package:flutter_food_ordering/model/order_response.dart';
 import 'package:flutter_food_ordering/model/user_response.dart';
 import 'package:flutter_food_ordering/resources/api_provider.dart';
+import 'package:flutter_food_ordering/viewmodels/base_model.dart';
+import 'package:flutter_food_ordering/viewmodels/order_viewmodel.dart';
+import 'package:flutter_food_ordering/viewmodels/user_viewmodel.dart';
+import 'package:flutter_food_ordering/widgets/center_loading.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
-class UserProfilePage extends StatefulWidget {
-  @override
-  _UserProfilePageState createState() => _UserProfilePageState();
-}
-
-class _UserProfilePageState extends State<UserProfilePage> {
-  ApiProvider apiProvider = ApiProvider();
-  Future<UserResponse> user;
-  Future<OrderResponse> orders;
-
-  @override
-  void initState() {
-    user = apiProvider.fetchUserData();
-    orders = apiProvider.fetchUserOrderHistory();
-    super.initState();
-  }
-
+// ignore: must_be_immutable
+class UserProfilePage extends StatelessWidget {
+  UserResponse userResponse;
+  OrderResponse orderResponse;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: mainColor,
-        title: Text('User Profile'),
-        centerTitle: true,
-        iconTheme: IconThemeData(color: Colors.black),
-        textTheme: TextTheme(title: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold)),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            FutureBuilder<UserResponse>(
-              future: user,
-              builder: (BuildContext context, AsyncSnapshot<UserResponse> snapshot) {
-                if (snapshot.hasData) {
-                  return buildProfile(snapshot.data);
-                } else if (snapshot.hasError) {
-                  return Text(snapshot.error.toString());
-                }
-                return Center(child: CircularProgressIndicator());
-              },
-            ),
-            Text('Order History', style: titleStyle),
-            buildUserOrderHistoryList(),
-          ],
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(builder: (_) => UserViewModel()),
+        ChangeNotifierProvider(builder: (_) => OrderViewModel()),
+      ],
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: mainColor,
+          title: Text('User Profile'),
+          centerTitle: true,
+          actions: <Widget>[AppBarAction()],
+          iconTheme: IconThemeData(color: Colors.black),
+          textTheme: TextTheme(title: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold)),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Consumer<UserViewModel>(
+                builder: (context, user, child) {
+                  userResponse = user.userResponse;
+                  switch (user.state) {
+                    case ViewState.error:
+                      return CenterLoadingError(Text(user.errorMessage));
+                      break;
+                    case ViewState.loading:
+                      return CenterLoadingError(CircularProgressIndicator());
+                      break;
+                    case ViewState.ready:
+                      return buildProfile(userResponse);
+                      break;
+                    default:
+                      return Container();
+                  }
+                },
+              ),
+              SizedBox(height: 32),
+              Text('Order History', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+              buildUserOrderHistoryList(),
+            ],
+          ),
         ),
       ),
     );
@@ -98,21 +105,29 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 
   Widget buildUserOrderHistoryList() {
-    return FutureBuilder<OrderResponse>(
-      future: orders,
-      builder: (BuildContext context, AsyncSnapshot<OrderResponse> snapshot) {
-        if (snapshot.hasData) {
-          return ListView.builder(
-            primary: false,
-            itemCount: snapshot.data.order.length,
-            shrinkWrap: true,
-            itemBuilder: (BuildContext context, int index) {
-              Order order = snapshot.data.order[index];
-              return buildOrderItem(order);
-            },
-          );
+    return Consumer<OrderViewModel>(
+      builder: (context, order, child) {
+        orderResponse = order.orderResponse;
+        switch (order.state) {
+          case ViewState.error:
+            return CenterLoadingError(Text(order.errorMessage));
+            break;
+          case ViewState.loading:
+            return CenterLoadingError(CircularProgressIndicator());
+            break;
+          case ViewState.ready:
+            return ListView.builder(
+              shrinkWrap: true,
+              primary: false,
+              itemCount: order.orderResponse.order.length,
+              itemBuilder: (BuildContext context, int index) {
+                return buildOrderItem(order.orderResponse.order[index]);
+              },
+            );
+            break;
+          default:
+            return Container();
         }
-        return Center(child: CircularProgressIndicator());
       },
     );
   }
@@ -133,9 +148,30 @@ class _UserProfilePageState extends State<UserProfilePage> {
               title: Text(item.food.name),
               subtitle: Text('Quantity: ${item.quantity}'),
             );
-          }).toList()
+          }).toList(),
+          Divider(),
+          ListTile(
+            title: Text('Total price: '),
+            trailing: Text('${order.totalPrice} \$'),
+          )
         ],
       ),
+    );
+  }
+}
+
+class AppBarAction extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var user = Provider.of<UserViewModel>(context);
+    var order = Provider.of<OrderViewModel>(context);
+
+    return IconButton(
+      icon: Icon(Icons.refresh),
+      onPressed: () {
+        user.getUserInfo();
+        order.getAllOrdersByUser();
+      },
     );
   }
 }

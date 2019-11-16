@@ -2,14 +2,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
 import 'package:flutter_food_ordering/model/foods_response.dart';
+import 'package:flutter_food_ordering/model/shop_response.dart' as prefix0;
 import 'package:flutter_food_ordering/pages/user_profile.dart';
 import 'package:flutter_food_ordering/resources/api_provider.dart';
 import 'package:flutter_food_ordering/viewmodels/base_model.dart';
 import 'package:flutter_food_ordering/viewmodels/cart_viewmodel.dart';
 import 'package:flutter_food_ordering/viewmodels/food_viewmodels.dart';
+import 'package:flutter_food_ordering/viewmodels/shop_viewmodel.dart';
 import 'package:flutter_food_ordering/widgets/cart_bottom_sheet.dart';
 import 'package:flutter_food_ordering/widgets/center_loading.dart';
 import 'package:flutter_food_ordering/widgets/food_card.dart';
+import 'package:flutter_food_ordering/widgets/shop_card.dart';
 import 'package:provider/provider.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -20,6 +23,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int value = 1;
   var foodViewModel;
+  PageController pageController = PageController(keepPage: true);
+
+  List get pages => [
+        buildFoodList(),
+        buildShopList(),
+      ];
 
   showCart() {
     showModalBottomSheet(
@@ -47,9 +56,22 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      builder: (context) => FoodViewModel(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(builder: (context) => FoodViewModel()),
+        ChangeNotifierProvider(builder: (context) => ShopViewModel()),
+      ],
       child: Scaffold(
+        bottomNavigationBar: BottomNavigationBar(
+          onTap: (index) {
+            pageController.jumpToPage(index);
+          },
+          currentIndex: pageController.page.floor(),
+          items: [
+            BottomNavigationBarItem(icon: Icon(Icons.fastfood), title: Text('Foods')),
+            BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), title: Text('Shop')),
+          ],
+        ),
         body: Container(
           margin: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
           child: Column(
@@ -57,23 +79,15 @@ class _MyHomePageState extends State<MyHomePage> {
               buildAppBar(),
               buildFoodFilter(),
               Divider(),
-              Consumer<FoodViewModel>(
-                builder: (context, food, child) {
-                  foodViewModel = food;
-                  switch (food.state) {
-                    case ViewState.error:
-                      return CenterLoadingError(Text(food.errorMessage));
-                      break;
-                    case ViewState.loading:
-                      return CenterLoadingError(CircularProgressIndicator());
-                      break;
-                    case ViewState.ready:
-                      return buildFoodList(food.foodResponse);
-                      break;
-                    default:
-                      return Container();
-                  }
-                },
+              Expanded(
+                child: PageView.builder(
+                  itemCount: 2,
+                  controller: pageController,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return pages[index];
+                  },
+                ),
               )
             ],
           ),
@@ -143,19 +157,64 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget buildFoodList(FoodResponse foodResponse) {
-    return Expanded(
-      child: GridView.count(
-        childAspectRatio: 0.65,
-        mainAxisSpacing: 4,
-        crossAxisSpacing: 4,
-        shrinkWrap: true,
-        crossAxisCount: 2,
-        physics: BouncingScrollPhysics(),
-        children: foodResponse.foods.map((food) {
-          return FoodCard(food);
-        }).toList(),
-      ),
+  Widget buildFoodList() {
+    return Consumer<FoodViewModel>(
+      builder: (context, food, child) {
+        foodViewModel = food;
+        switch (food.state) {
+          case ViewState.error:
+            return CenterLoadingError(Text(food.errorMessage));
+            break;
+          case ViewState.loading:
+            return CenterLoadingError(CircularProgressIndicator());
+            break;
+          case ViewState.ready:
+            return GridView.count(
+              childAspectRatio: 0.65,
+              mainAxisSpacing: 4,
+              crossAxisSpacing: 4,
+              shrinkWrap: true,
+              crossAxisCount: 2,
+              physics: BouncingScrollPhysics(),
+              children: food.foodResponse.foods.map((food) {
+                return FoodCard(food);
+              }).toList(),
+            );
+            break;
+          default:
+            return Container();
+        }
+      },
+    );
+  }
+
+  Widget buildShopList() {
+    return Consumer<ShopViewModel>(
+      builder: (context, shop, child) {
+        switch (shop.state) {
+          case ViewState.error:
+            return CenterLoadingError(Text(shop.errorMessage));
+            break;
+          case ViewState.loading:
+            return CenterLoadingError(CircularProgressIndicator());
+            break;
+          case ViewState.ready:
+            return GridView.count(
+              childAspectRatio: 0.65,
+              mainAxisSpacing: 4,
+              crossAxisSpacing: 4,
+              shrinkWrap: true,
+              crossAxisCount: 2,
+              physics: BouncingScrollPhysics(),
+              children: shop.shopResponse.shops.map((prefix0.Shop shop) {
+                return ShopCard(shop);
+              }).toList(),
+            );
+            break;
+          default:
+            return Container();
+        }
+      },
     );
   }
 }
