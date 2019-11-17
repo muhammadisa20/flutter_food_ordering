@@ -142,7 +142,10 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
                 ? SizedBox(
                     width: 24,
                     height: 24,
-                    child: CircularProgressIndicator(strokeWidth: 3),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 3,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                    ),
                   )
                 : child;
           },

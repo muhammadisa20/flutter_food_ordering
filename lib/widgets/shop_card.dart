@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
 import 'package:flutter_food_ordering/model/shop_response.dart';
@@ -35,8 +36,7 @@ class ShopCard extends StatelessWidget {
                   padding: EdgeInsets.all(4),
                   decoration: BoxDecoration(
                     color: mainColor,
-                    borderRadius:
-                        BorderRadius.only(topRight: Radius.circular(12)),
+                    borderRadius: BorderRadius.only(topRight: Radius.circular(12)),
                   ),
                   child: Text(shop.type),
                 ),
@@ -53,22 +53,11 @@ class ShopCard extends StatelessWidget {
       height: MediaQuery.of(context).size.width / 2.5,
       child: ClipRRect(
         borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-        child: Image.network(
-          '$BASE_URL/uploads/${shop.logo}',
+        child: CachedNetworkImage(
           fit: BoxFit.cover,
-          loadingBuilder: (context, Widget child, ImageChunkEvent progress) {
-            if (progress == null) return child;
-            return Center(
-              child: Padding(
-                padding: EdgeInsets.all(32),
-                child: CircularProgressIndicator(
-                    value: progress.expectedTotalBytes != null
-                        ? progress.cumulativeBytesLoaded /
-                            progress.expectedTotalBytes
-                        : null),
-              ),
-            );
-          },
+          imageUrl: "$BASE_URL/uploads/${shop.logo}",
+          placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+          errorWidget: (context, url, error) => Icon(Icons.error),
         ),
       ),
     );

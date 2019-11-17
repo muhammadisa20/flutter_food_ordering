@@ -33,7 +33,12 @@ class UserProfilePage extends StatelessWidget {
         ),
         body: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+                child: Text('User Info', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+              ),
               Consumer<UserViewModel>(
                 builder: (context, user, child) {
                   userResponse = user.userResponse;
@@ -52,8 +57,10 @@ class UserProfilePage extends StatelessWidget {
                   }
                 },
               ),
-              SizedBox(height: 32),
-              Text('Order History', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+                child: Text('Order History', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+              ),
               buildUserOrderHistoryList(),
             ],
           ),
@@ -134,12 +141,18 @@ class UserProfilePage extends StatelessWidget {
 
   Widget buildOrderItem(Order order) {
     return Card(
+      margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      shape: RoundedRectangleBorder(
+          side: BorderSide(width: 0.1, color: Colors.black12), borderRadius: BorderRadius.circular(8)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(left: 16, top: 16),
-            child: Text('Order Date: ' + DateFormat().format(order.orderDate.toLocal()), style: titleStyle2),
+            decoration: BoxDecoration(color: mainColor, borderRadius: BorderRadius.vertical(top: Radius.circular(8))),
+            width: double.infinity,
+            alignment: Alignment.center,
+            padding: EdgeInsets.symmetric(vertical: 12),
+            child: Text('Order Date: ' + DateFormat().format(order.orderDate.toLocal()), style: titleStyle),
           ),
           ...order.items.map((item) {
             return ListTile(
@@ -149,7 +162,7 @@ class UserProfilePage extends StatelessWidget {
               subtitle: Text('Quantity: ${item.quantity}'),
             );
           }).toList(),
-          Divider(),
+          Divider(thickness: 1.5),
           ListTile(
             title: Text('Total price: '),
             trailing: Text('${order.totalPrice} \$'),

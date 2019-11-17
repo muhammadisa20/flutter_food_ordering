@@ -38,7 +38,7 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
                   sliver: SliverPadding(
                     padding: EdgeInsets.zero,
                     sliver: SliverAppBar(
-                      snap: true,
+                      snap: false,
                       pinned: true,
                       floating: true,
                       expandedHeight: 250,

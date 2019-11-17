@@ -73,8 +73,7 @@ class ApiProvider {
 
   Future<OrderResponse> fetchUserOrderHistory() async {
     try {
-      var response = await dio
-          .get('$BASE_URL/api/order/user', queryParameters: {"token": token});
+      var response = await dio.get('$BASE_URL/api/order/user', queryParameters: {"token": token});
       print('fetch user order');
       if (response.data['status'] == 1) {
         return OrderResponse.fromJson(response.data);
@@ -90,15 +89,12 @@ class ApiProvider {
   Future<bool> orderFood(MyCartViewModel cart) async {
     try {
       List<Map> data = List.generate(cart.cartItems.length, (index) {
-        return {
-          "id": cart.cartItems[index].food.id,
-          "quantity": cart.cartItems[index].quantity
-        };
+        return {"id": cart.cartItems[index].food.id, "quantity": cart.cartItems[index].quantity};
       }).toList();
 
-      var response = await dio.post('$BASE_URL/api/order/food',
-          queryParameters: {"token": token}, data: data);
+      var response = await dio.post('$BASE_URL/api/order/food', queryParameters: {"token": token}, data: data);
       if (response.data['status'] == 1) {
+        print(response.data['message']);
         cart.clearCart();
         return true;
       } else {
@@ -111,16 +107,21 @@ class ApiProvider {
     }
   }
 
-  void handleExceptionError(DioError error) {
-    print(error.message);
-    if (error.message.contains('timed out')) {
-      throw 'Error Connecting to server!!';
-    } else if (error.message.contains('SocketException')) {
-      if (error.error.message != "")
-        throw error.error.message;
-      else
-        throw error.message;
+  void handleExceptionError(dynamic error) {
+    if (error is DioError) {
+      print(error.message);
+      if (error.message.contains('timed out')) {
+        throw 'Error Connecting to server!!';
+      } else if (error.message.contains('SocketException')) {
+        if (error.error.message != "")
+          throw error.error.osError.message;
+        else
+          throw error.message;
+      }
+      throw error.message;
+    } else {
+      print(error);
+      throw error;
     }
-    throw error.message;
   }
 }

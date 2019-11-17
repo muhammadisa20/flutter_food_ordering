@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
 import 'package:flutter_food_ordering/model/foods_response.dart';
@@ -60,21 +61,11 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
       height: MediaQuery.of(context).size.width / 2.5,
       child: ClipRRect(
         borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-        child: Image.network(
-          '$BASE_URL/uploads/${food.images[0]}',
+        child: CachedNetworkImage(
           fit: BoxFit.cover,
-          loadingBuilder: (context, Widget child, ImageChunkEvent progress) {
-            if (progress == null) return child;
-            return Center(
-              child: Padding(
-                padding: EdgeInsets.all(32),
-                child: CircularProgressIndicator(
-                    value: progress.expectedTotalBytes != null
-                        ? progress.cumulativeBytesLoaded / progress.expectedTotalBytes
-                        : null),
-              ),
-            );
-          },
+          imageUrl: "$BASE_URL/uploads/${food.images[0]}",
+          placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+          errorWidget: (context, url, error) => Icon(Icons.error),
         ),
       ),
     );
@@ -138,14 +129,14 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
             '\$ ${food.price}',
             style: titleStyle,
           ),
-          Card(
-            margin: EdgeInsets.only(right: 0),
-            shape: roundedRectangle4,
-            color: mainColor,
-            child: InkWell(
-              onTap: addItemToCard,
-              splashColor: Colors.white70,
-              customBorder: roundedRectangle4,
+          InkWell(
+            onTap: addItemToCard,
+            splashColor: Colors.white70,
+            customBorder: roundedRectangle4,
+            child: Card(
+              margin: EdgeInsets.zero,
+              shape: roundedRectangle4,
+              color: mainColor,
               child: Icon(Icons.add),
             ),
           )
