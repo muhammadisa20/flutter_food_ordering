@@ -164,13 +164,13 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
           label: 'view',
           onPressed: showCart,
         ),
-        duration: Duration(milliseconds: 1500),
+        duration: Duration(seconds: 1),
       );
       Scaffold.of(context).showSnackBar(snackBar);
     } else {
       final snackBar = SnackBar(
         content: Text('You can\'t order from multiple shop at the same time'),
-        duration: Duration(milliseconds: 1500),
+        duration: Duration(seconds: 3),
       );
       Scaffold.of(context).showSnackBar(snackBar);
     }

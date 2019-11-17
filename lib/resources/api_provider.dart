@@ -40,6 +40,22 @@ class ApiProvider {
     }
   }
 
+  Future<FoodResponse> fetchFoodsByShop(String shopId) async {
+    Response response;
+    try {
+      response = await dio.get('$BASE_URL/api/foods/shop/$shopId');
+      print('fetch foods by shop');
+      if (response.data['status'] == 1) {
+        return FoodResponse.fromJson(response.data);
+      } else {
+        throw response.data['message'];
+      }
+    } on DioError catch (error) {
+      handleExceptionError(error);
+      return null;
+    }
+  }
+
   Future<UserResponse> fetchUserData() async {
     try {
       var response = await dio.get('$BASE_URL/api/user/info/$userId');
@@ -57,7 +73,8 @@ class ApiProvider {
 
   Future<OrderResponse> fetchUserOrderHistory() async {
     try {
-      var response = await dio.get('$BASE_URL/api/order/user', queryParameters: {"token": token});
+      var response = await dio
+          .get('$BASE_URL/api/order/user', queryParameters: {"token": token});
       print('fetch user order');
       if (response.data['status'] == 1) {
         return OrderResponse.fromJson(response.data);
@@ -73,10 +90,14 @@ class ApiProvider {
   Future<bool> orderFood(MyCartViewModel cart) async {
     try {
       List<Map> data = List.generate(cart.cartItems.length, (index) {
-        return {"id": cart.cartItems[index].food.id, "quantity": cart.cartItems[index].quantity};
+        return {
+          "id": cart.cartItems[index].food.id,
+          "quantity": cart.cartItems[index].quantity
+        };
       }).toList();
 
-      var response = await dio.post('$BASE_URL/api/order/food', queryParameters: {"token": token}, data: data);
+      var response = await dio.post('$BASE_URL/api/order/food',
+          queryParameters: {"token": token}, data: data);
       if (response.data['status'] == 1) {
         cart.clearCart();
         return true;
@@ -95,7 +116,10 @@ class ApiProvider {
     if (error.message.contains('timed out')) {
       throw 'Error Connecting to server!!';
     } else if (error.message.contains('SocketException')) {
-      throw error.error.message;
+      if (error.error.message != "")
+        throw error.error.message;
+      else
+        throw error.message;
     }
     throw error.message;
   }

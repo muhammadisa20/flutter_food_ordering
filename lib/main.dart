@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_food_ordering/constants/values.dart';
 import 'package:flutter_food_ordering/pages/home_page.dart';
 import 'package:flutter_food_ordering/resources/api_provider.dart';
 import 'package:flutter_food_ordering/viewmodels/cart_viewmodel.dart';
@@ -17,7 +18,7 @@ void setUpLocator() {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  final MaterialColor custom = MaterialColor(0xFFDDCC00, mainColorSwatch);
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
         showSemanticsDebugger: false,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          primarySwatch: custom,
         ),
         home: MyHomePage(),
       ),

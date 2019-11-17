@@ -22,8 +22,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int value = 1;
-  var foodViewModel;
+  FoodViewModel foodViewModel;
+  ShopViewModel shopViewModel;
   PageController pageController = PageController(keepPage: true);
+  ValueNotifier<int> pageIndex = ValueNotifier(0);
 
   List get pages => [
         buildFoodList(),
@@ -62,15 +64,23 @@ class _MyHomePageState extends State<MyHomePage> {
         ChangeNotifierProvider(builder: (context) => ShopViewModel()),
       ],
       child: Scaffold(
-        bottomNavigationBar: BottomNavigationBar(
-          onTap: (index) {
-            pageController.jumpToPage(index);
+        bottomNavigationBar: ValueListenableBuilder(
+          valueListenable: pageIndex,
+          builder: (context, page, child) {
+            return BottomNavigationBar(
+              onTap: (index) {
+                pageController.jumpToPage(index);
+                pageIndex.value = index;
+              },
+              currentIndex: page,
+              items: [
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.fastfood), title: Text('Foods')),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.shopping_cart), title: Text('Shop')),
+              ],
+            );
           },
-          currentIndex: pageController.page.floor(),
-          items: [
-            BottomNavigationBarItem(icon: Icon(Icons.fastfood), title: Text('Foods')),
-            BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), title: Text('Shop')),
-          ],
         ),
         body: Container(
           margin: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
@@ -107,7 +117,12 @@ class _MyHomePageState extends State<MyHomePage> {
           Text('MENU', style: headerStyle),
           Spacer(),
           IconButton(icon: Icon(Icons.person), onPressed: viewProfile),
-          IconButton(icon: Icon(Icons.refresh), onPressed: () => foodViewModel.getAllFoods()),
+          IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: () {
+                foodViewModel.getAllFoods();
+                shopViewModel.getAllShops();
+              }),
           Stack(
             children: <Widget>[
               IconButton(icon: Icon(Icons.shopping_cart), onPressed: showCart),
@@ -116,7 +131,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Container(
                   alignment: Alignment.center,
                   padding: EdgeInsets.all(4),
-                  decoration: BoxDecoration(shape: BoxShape.circle, color: mainColor),
+                  decoration:
+                      BoxDecoration(shape: BoxShape.circle, color: mainColor),
                   child: Text(
                     '$items',
                     style: TextStyle(fontSize: 12, color: Colors.black),
@@ -142,7 +158,8 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: const EdgeInsets.all(8.0),
             child: ChoiceChip(
               selectedColor: mainColor,
-              labelStyle: TextStyle(color: value == index ? Colors.white : Colors.black),
+              labelStyle: TextStyle(
+                  color: value == index ? Colors.white : Colors.black),
               label: Text(FoodTypes.values[index].toString().split('.').last),
               selected: value == index,
               onSelected: (selected) {
@@ -191,6 +208,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget buildShopList() {
     return Consumer<ShopViewModel>(
       builder: (context, shop, child) {
+        shopViewModel = shop;
         switch (shop.state) {
           case ViewState.error:
             return CenterLoadingError(Text(shop.errorMessage));
