@@ -134,41 +134,43 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
   }
 
   Widget buildShopInfo() {
-    return Column(
-      children: <Widget>[
-        Card(
-          margin: EdgeInsets.only(top: 16, left: 8, right: 8),
-          child: ListTile(
-            title: Text('Shop name'),
-            subtitle: Text(widget.shop.name),
+    return SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          Card(
+            margin: EdgeInsets.only(top: 16, left: 8, right: 8),
+            child: ListTile(
+              title: Text('Shop name'),
+              subtitle: Text(widget.shop.name),
+            ),
           ),
-        ),
-        Card(
-          child: ListTile(
-            title: Text('Description'),
-            subtitle: Text(widget.shop.description),
+          Card(
+            child: ListTile(
+              title: Text('Description'),
+              subtitle: Text(widget.shop.description),
+            ),
           ),
-        ),
-        Card(
-          child: ListTile(
-            title: Text('Type'),
-            subtitle: Text(widget.shop.type),
+          Card(
+            child: ListTile(
+              title: Text('Type'),
+              subtitle: Text(widget.shop.type),
+            ),
           ),
-        ),
-        Card(
-          child: ListTile(
-            title: Text('Email'),
-            subtitle: Text(widget.shop.email),
+          Card(
+            child: ListTile(
+              title: Text('Email'),
+              subtitle: Text(widget.shop.email),
+            ),
           ),
-        ),
-        Card(
-          child: ListTile(
-            title: Text('Phone Number'),
-            subtitle: Text(widget.shop.phoneNumber),
-            trailing: IconButton(icon: Icon(Icons.call), onPressed: () {}),
+          Card(
+            child: ListTile(
+              title: Text('Phone Number'),
+              subtitle: Text(widget.shop.phoneNumber),
+              trailing: IconButton(icon: Icon(Icons.call), onPressed: () {}),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

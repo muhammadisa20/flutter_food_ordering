@@ -13,6 +13,7 @@ import 'package:flutter_food_ordering/widgets/cart_bottom_sheet.dart';
 import 'package:flutter_food_ordering/widgets/center_loading.dart';
 import 'package:flutter_food_ordering/widgets/food_card.dart';
 import 'package:flutter_food_ordering/widgets/shop_card.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -49,10 +50,12 @@ class _MyHomePageState extends State<MyHomePage> {
   switchUser() async {
     if (userId == '5dc917096e1c39409c4534c7') {
       userId = '5dcc00806b416c12ecc5bd93';
-      token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZGNjMDA4MDZiNDE2YzEyZWNjNWJkOTMiLCJpYXQiOjE1NzQwNDMxNjd9.MjDL4CbEVNhF-D8Sr2R6GKyyYI2nVR348u7Y1n9JMOo';
+      token =
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZGNjMDA4MDZiNDE2YzEyZWNjNWJkOTMiLCJpYXQiOjE1NzQwNDMxNjd9.MjDL4CbEVNhF-D8Sr2R6GKyyYI2nVR348u7Y1n9JMOo';
     } else {
       userId = '5dc917096e1c39409c4534c7';
-      token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZGM5MTcwOTZlMWMzOTQwOWM0NTM0YzciLCJpYXQiOjE1NzQwNDMyNzJ9.hlcBmrekYYeddX-VIo-_GVAJlzJnO3Zha6Y2n9Yy-co';
+      token =
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZGM5MTcwOTZlMWMzOTQwOWM0NTM0YzciLCJpYXQiOjE1NzQwNDMyNzJ9.hlcBmrekYYeddX-VIo-_GVAJlzJnO3Zha6Y2n9Yy-co';
     }
   }
 
@@ -104,8 +107,10 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               currentIndex: page,
               items: [
-                BottomNavigationBarItem(icon: Icon(Icons.fastfood), title: Text('Foods')),
-                BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), title: Text('Shop')),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.fastfood), title: Text('Foods')),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.shopping_cart), title: Text('Shop')),
               ],
             );
           },
@@ -124,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           Text('MENU', style: headerStyle),
           Spacer(),
-          IconButton(icon: Icon(Icons.person_add), onPressed: switchUser),
+          IconButton(icon: Icon(Icons.cached), onPressed: switchUser),
           IconButton(icon: Icon(Icons.person), onPressed: viewProfile),
           IconButton(
               icon: Icon(Icons.refresh),
@@ -140,7 +145,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Container(
                   alignment: Alignment.center,
                   padding: EdgeInsets.all(4),
-                  decoration: BoxDecoration(shape: BoxShape.circle, color: mainColor),
+                  decoration:
+                      BoxDecoration(shape: BoxShape.circle, color: mainColor),
                   child: Text(
                     '$items',
                     style: TextStyle(fontSize: 12, color: Colors.black),
@@ -166,7 +172,8 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: const EdgeInsets.all(8.0),
             child: ChoiceChip(
               selectedColor: mainColor,
-              labelStyle: TextStyle(color: value == index ? Colors.white : Colors.black),
+              labelStyle: TextStyle(
+                  color: value == index ? Colors.white : Colors.black),
               label: Text(FoodTypes.values[index].toString().split('.').last),
               selected: value == index,
               onSelected: (selected) {

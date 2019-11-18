@@ -53,7 +53,7 @@ class UserProfilePage extends StatelessWidget {
                       return CenterLoadingError(CircularProgressIndicator());
                       break;
                     case ViewState.ready:
-                      return buildProfile(userResponse);
+                      return buildProfile(userResponse, user, context);
                       break;
                     default:
                       return Container();
@@ -72,7 +72,7 @@ class UserProfilePage extends StatelessWidget {
     );
   }
 
-  Widget buildProfile(UserResponse userResponse) {
+  Widget buildProfile(UserResponse userResponse, UserViewModel user, context) {
     return Container(
       padding: EdgeInsets.all(12),
       child: Column(
@@ -115,6 +115,16 @@ class UserProfilePage extends StatelessWidget {
               leading: Icon(Icons.my_location),
               title: Text('Delivery Location'),
               subtitle: Text(userResponse.user.location.toString()),
+              trailing: IconButton(
+                icon: Icon(Icons.map),
+                onPressed: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DeliveryLocationPage()),
+                  );
+                  user.getUserInfo();
+                },
+              ),
             ),
           ),
         ],
@@ -153,7 +163,8 @@ class UserProfilePage extends StatelessWidget {
   Widget buildOrderItem(Order order) {
     return Card(
       margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      shape: RoundedRectangleBorder(side: BorderSide(width: 0.1, color: Colors.black12), borderRadius: BorderRadius.circular(8)),
+      shape: RoundedRectangleBorder(
+          side: BorderSide(width: 0.1, color: Colors.black12), borderRadius: BorderRadius.circular(8)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -199,16 +210,6 @@ class AppBarAction extends StatelessWidget {
             order.getAllOrdersByUser();
           },
         ),
-        IconButton(
-          icon: Icon(Icons.map),
-          onPressed: () async {
-            await Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SelectLocationPage()),
-            );
-            user.getUserInfo();
-          },
-        )
       ],
     );
   }
