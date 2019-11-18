@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
 import 'package:flutter_food_ordering/model/foods_response.dart';
+import 'package:flutter_food_ordering/model/location_picked_model.dart';
 import 'package:flutter_food_ordering/model/order_response.dart';
 import 'package:flutter_food_ordering/model/shop_response.dart';
 import 'package:flutter_food_ordering/model/user_response.dart';
@@ -96,6 +97,30 @@ class ApiProvider {
       if (response.data['status'] == 1) {
         print(response.data['message']);
         cart.clearCart();
+        return true;
+      } else {
+        handleExceptionError(response.data['message']);
+        return null;
+      }
+    } on DioError catch (error) {
+      handleExceptionError(error);
+      return null;
+    }
+  }
+
+  Future<bool> updateUserDeliveryLocation(LocationPickedModel locationPickedModel) async {
+    try {
+      Map<String, dynamic> data = {
+        "streetName": locationPickedModel.streetName ?? null,
+        "khan": locationPickedModel.khan ?? null,
+        "city": locationPickedModel.city ?? null,
+        "lat": locationPickedModel.lat,
+        "lng": locationPickedModel.lng,
+      };
+
+      var response = await dio.patch('$BASE_URL/api/user/$userId', queryParameters: {"token": token}, data: data);
+      if (response.data['status'] == 1) {
+        print(response.data['message']);
         return true;
       } else {
         handleExceptionError(response.data['message']);

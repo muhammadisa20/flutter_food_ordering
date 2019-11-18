@@ -30,15 +30,6 @@ class UserProfilePage extends StatelessWidget {
           centerTitle: true,
           actions: <Widget>[
             AppBarAction(),
-            IconButton(
-              icon: Icon(Icons.map),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SelectLocationPage()),
-                );
-              },
-            )
           ],
           iconTheme: IconThemeData(color: Colors.black),
           textTheme: TextTheme(title: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold)),
@@ -118,6 +109,14 @@ class UserProfilePage extends StatelessWidget {
               subtitle: Text(userResponse.user.phoneNumber),
             ),
           ),
+          Card(
+            child: ListTile(
+              isThreeLine: true,
+              leading: Icon(Icons.my_location),
+              title: Text('Delivery Location'),
+              subtitle: Text(userResponse.user.location.toString()),
+            ),
+          ),
         ],
       ),
     );
@@ -191,12 +190,26 @@ class AppBarAction extends StatelessWidget {
   Widget build(BuildContext context) {
     var user = Provider.of<UserViewModel>(context);
     var order = Provider.of<OrderViewModel>(context);
-    return IconButton(
-      icon: Icon(Icons.refresh),
-      onPressed: () {
-        user.getUserInfo();
-        order.getAllOrdersByUser();
-      },
+    return Row(
+      children: <Widget>[
+        IconButton(
+          icon: Icon(Icons.refresh),
+          onPressed: () {
+            user.getUserInfo();
+            order.getAllOrdersByUser();
+          },
+        ),
+        IconButton(
+          icon: Icon(Icons.map),
+          onPressed: () async {
+            await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SelectLocationPage()),
+            );
+            user.getUserInfo();
+          },
+        )
+      ],
     );
   }
 }
