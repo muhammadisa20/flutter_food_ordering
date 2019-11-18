@@ -113,7 +113,7 @@ class ApiProvider {
       if (error.message.contains('timed out')) {
         throw 'Error Connecting to server!!';
       } else if (error.message.contains('SocketException')) {
-        if (error.error.message != "")
+        if (error.error.message == "")
           throw error.error.osError.message;
         else
           throw error.message;

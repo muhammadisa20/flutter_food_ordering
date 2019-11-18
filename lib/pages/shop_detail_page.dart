@@ -20,6 +20,7 @@ class ShopDetailPage extends StatefulWidget {
 
 class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProviderStateMixin {
   TabController tabController;
+  num top = double.infinity;
   @override
   void initState() {
     tabController = TabController(vsync: this, length: 2);
@@ -45,13 +46,19 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
                       pinned: true,
                       floating: true,
                       expandedHeight: 250,
-                      flexibleSpace: FlexibleSpaceBar(
-                        background: Image.network(
-                          '$BASE_URL/uploads/${widget.shop.logo}',
-                          colorBlendMode: BlendMode.overlay,
-                          color: Colors.black12,
-                          fit: BoxFit.cover,
-                        ),
+                      flexibleSpace: LayoutBuilder(
+                        builder: (context, BoxConstraints constraint) {
+                          top = constraint.biggest.height;
+                          return FlexibleSpaceBar(
+                            background: Image.network(
+                              '$BASE_URL/uploads/${widget.shop.logo}',
+                              colorBlendMode: BlendMode.overlay,
+                              color: Colors.black12,
+                              fit: BoxFit.cover,
+                            ),
+                            title: Text(top > 100 ? '' : widget.shop.name, style: headerStyleSmall),
+                          );
+                        },
                       ),
                     ),
                   ),
@@ -72,8 +79,8 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
                 TabBar(
                   controller: tabController,
                   tabs: <Widget>[
-                    Tab(text: 'Foods'),
-                    Tab(text: 'Info'),
+                    Tab(child: Text('Foods', style: titleStyle)),
+                    Tab(child: Text('Info', style: titleStyle)),
                   ],
                 ),
                 Expanded(
@@ -158,6 +165,7 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
           child: ListTile(
             title: Text('Phone Number'),
             subtitle: Text(widget.shop.phoneNumber),
+            trailing: IconButton(icon: Icon(Icons.call), onPressed: () {}),
           ),
         ),
       ],

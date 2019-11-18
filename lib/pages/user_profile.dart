@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
 import 'package:flutter_food_ordering/model/order_response.dart';
 import 'package:flutter_food_ordering/model/user_response.dart';
+import 'package:flutter_food_ordering/pages/select_map.dart';
 import 'package:flutter_food_ordering/resources/api_provider.dart';
 import 'package:flutter_food_ordering/viewmodels/base_model.dart';
 import 'package:flutter_food_ordering/viewmodels/order_viewmodel.dart';
@@ -27,7 +28,18 @@ class UserProfilePage extends StatelessWidget {
           backgroundColor: mainColor,
           title: Text('User Profile'),
           centerTitle: true,
-          actions: <Widget>[AppBarAction()],
+          actions: <Widget>[
+            AppBarAction(),
+            IconButton(
+              icon: Icon(Icons.map),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SelectLocationPage()),
+                );
+              },
+            )
+          ],
           iconTheme: IconThemeData(color: Colors.black),
           textTheme: TextTheme(title: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold)),
         ),
@@ -142,8 +154,7 @@ class UserProfilePage extends StatelessWidget {
   Widget buildOrderItem(Order order) {
     return Card(
       margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      shape: RoundedRectangleBorder(
-          side: BorderSide(width: 0.1, color: Colors.black12), borderRadius: BorderRadius.circular(8)),
+      shape: RoundedRectangleBorder(side: BorderSide(width: 0.1, color: Colors.black12), borderRadius: BorderRadius.circular(8)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -156,7 +167,9 @@ class UserProfilePage extends StatelessWidget {
           ),
           ...order.items.map((item) {
             return ListTile(
-              leading: Icon(Icons.fastfood),
+              leading: CircleAvatar(
+                backgroundImage: NetworkImage('$BASE_URL/uploads/${item.food.images[0]}'),
+              ),
               trailing: Text('Price: ${item.food.price} \$'),
               title: Text(item.food.name),
               subtitle: Text('Quantity: ${item.quantity}'),
@@ -178,7 +191,6 @@ class AppBarAction extends StatelessWidget {
   Widget build(BuildContext context) {
     var user = Provider.of<UserViewModel>(context);
     var order = Provider.of<OrderViewModel>(context);
-
     return IconButton(
       icon: Icon(Icons.refresh),
       onPressed: () {

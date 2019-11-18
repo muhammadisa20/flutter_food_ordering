@@ -10,6 +10,7 @@ String token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZGNjMDA4MDZiNDE
 
 //Style
 final headerStyle = TextStyle(fontSize: 22, fontWeight: FontWeight.bold);
+final headerStyleSmall = TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
 final titleStyle = TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
 final titleStyle2 = TextStyle(fontSize: 16, color: Colors.black45);
 final subtitleStyle = TextStyle(fontSize: 14, fontWeight: FontWeight.w500);
