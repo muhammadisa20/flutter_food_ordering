@@ -65,16 +65,14 @@ class ShopCard extends StatelessWidget {
 
   Widget buildShopInfo() {
     return Container(
-      padding: const EdgeInsets.only(left: 8, right: 8, top: 12, bottom: 24),
+      padding: const EdgeInsets.only(left: 8, right: 8, top: 12, bottom: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(shop.name, style: titleStyle),
           SizedBox(height: 4),
-          Text(shop.description, style: infoStyle),
-          SizedBox(height: 4),
-          Text('Phone number: ' + shop.phoneNumber, style: infoStyle),
+          Text(shop.description, style: infoStyle, maxLines: 2),
         ],
       ),
     );
@@ -82,7 +80,7 @@ class ShopCard extends StatelessWidget {
 
   Widget buildRating() {
     return Padding(
-      padding: const EdgeInsets.only(left: 8, right: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,

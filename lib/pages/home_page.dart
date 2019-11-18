@@ -46,6 +46,16 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  switchUser() async {
+    if (userId == '5dc917096e1c39409c4534c7') {
+      userId = '5dcc00806b416c12ecc5bd93';
+      token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZGNjMDA4MDZiNDE2YzEyZWNjNWJkOTMiLCJpYXQiOjE1NzQwNDMxNjd9.MjDL4CbEVNhF-D8Sr2R6GKyyYI2nVR348u7Y1n9JMOo';
+    } else {
+      userId = '5dc917096e1c39409c4534c7';
+      token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZGM5MTcwOTZlMWMzOTQwOWM0NTM0YzciLCJpYXQiOjE1NzQwNDMyNzJ9.hlcBmrekYYeddX-VIo-_GVAJlzJnO3Zha6Y2n9Yy-co';
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -64,26 +74,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ChangeNotifierProvider(builder: (context) => ShopViewModel()),
       ],
       child: Scaffold(
-        bottomNavigationBar: ValueListenableBuilder(
-          valueListenable: pageIndex,
-          builder: (context, page, child) {
-            return BottomNavigationBar(
-              onTap: (index) {
-                pageController.jumpToPage(index);
-                pageIndex.value = index;
-              },
-              currentIndex: page,
-              items: [
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.fastfood), title: Text('Foods')),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.shopping_cart), title: Text('Shop')),
-              ],
-            );
-          },
-        ),
         body: Container(
-          margin: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+          margin: EdgeInsets.only(left: 12, right: 12, top: 12),
           child: Column(
             children: <Widget>[
               buildAppBar(),
@@ -102,6 +94,22 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
+        bottomNavigationBar: ValueListenableBuilder(
+          valueListenable: pageIndex,
+          builder: (context, page, child) {
+            return BottomNavigationBar(
+              onTap: (index) {
+                pageController.jumpToPage(index);
+                pageIndex.value = index;
+              },
+              currentIndex: page,
+              items: [
+                BottomNavigationBarItem(icon: Icon(Icons.fastfood), title: Text('Foods')),
+                BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), title: Text('Shop')),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -116,12 +124,13 @@ class _MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           Text('MENU', style: headerStyle),
           Spacer(),
+          IconButton(icon: Icon(Icons.person_add), onPressed: switchUser),
           IconButton(icon: Icon(Icons.person), onPressed: viewProfile),
           IconButton(
               icon: Icon(Icons.refresh),
               onPressed: () {
                 foodViewModel.getAllFoods();
-                shopViewModel.getAllShops();
+                if (shopViewModel != null) shopViewModel.getAllShops();
               }),
           Stack(
             children: <Widget>[
@@ -131,8 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Container(
                   alignment: Alignment.center,
                   padding: EdgeInsets.all(4),
-                  decoration:
-                      BoxDecoration(shape: BoxShape.circle, color: mainColor),
+                  decoration: BoxDecoration(shape: BoxShape.circle, color: mainColor),
                   child: Text(
                     '$items',
                     style: TextStyle(fontSize: 12, color: Colors.black),
@@ -158,8 +166,7 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: const EdgeInsets.all(8.0),
             child: ChoiceChip(
               selectedColor: mainColor,
-              labelStyle: TextStyle(
-                  color: value == index ? Colors.white : Colors.black),
+              labelStyle: TextStyle(color: value == index ? Colors.white : Colors.black),
               label: Text(FoodTypes.values[index].toString().split('.').last),
               selected: value == index,
               onSelected: (selected) {
@@ -187,6 +194,7 @@ class _MyHomePageState extends State<MyHomePage> {
             break;
           case ViewState.ready:
             return GridView.count(
+              padding: EdgeInsets.zero,
               childAspectRatio: 0.65,
               mainAxisSpacing: 4,
               crossAxisSpacing: 4,

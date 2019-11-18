@@ -59,7 +59,7 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
     return Scaffold(
       appBar: AppBar(
         backgroundColor: mainColor,
-        title: Text('CheckOut'),
+        title: Text('Checkout'),
         centerTitle: true,
         iconTheme: IconThemeData(color: Colors.black),
         textTheme: TextTheme(title: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold)),
@@ -101,10 +101,6 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
         padding: const EdgeInsets.symmetric(vertical: 32.0, horizontal: 0),
         child: Text('$weekDay, ${day}th of $month ', style: headerStyle),
       ),
-      FlatButton(
-        child: Text('+ Add to order'),
-        onPressed: () => Navigator.of(context).pop(),
-      ),
     ];
   }
 
@@ -122,8 +118,7 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
         AnimatedBuilder(
           animation: animationController,
           builder: (context, child) {
-            return Text('\$ ${lerpDouble(oldTotal, total, animationController.value).toStringAsFixed(2)}',
-                style: headerStyle);
+            return Text('\$ ${lerpDouble(oldTotal, total, animationController.value).toStringAsFixed(2)}', style: headerStyle);
           },
         ),
       ],

@@ -10,7 +10,7 @@ class MyCartViewModel extends ChangeNotifier {
       if (cartItem.food.shop.id != cart.food.shop.id) {
         return false;
       }
-      if (cartItem.food.name == cart.food.name) {
+      if (cartItem.food.id == cart.food.id) {
         cartItems[cartItems.indexOf(cart)].quantity++;
         notifyListeners();
         return true;
@@ -42,7 +42,7 @@ class MyCartViewModel extends ChangeNotifier {
 
   void removeAllInCart(Food food) {
     cartItems.removeWhere((f) {
-      return f.food.name == food.name;
+      return f.food.id == food.id;
     });
     notifyListeners();
   }
