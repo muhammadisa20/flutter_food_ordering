@@ -22,4 +22,9 @@ class UserViewModel extends BaseViewModel {
       notifyListeners();
     }
   }
+
+  void updateImage(String image) {
+    userResponse.user.profileImg = image;
+    setState(ViewState.ready);
+  }
 }

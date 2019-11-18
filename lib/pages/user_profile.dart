@@ -1,6 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
+import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
+import 'package:flutter_food_ordering/main.dart';
 import 'package:flutter_food_ordering/model/order_response.dart';
 import 'package:flutter_food_ordering/model/user_response.dart';
 import 'package:flutter_food_ordering/pages/select_map.dart';
@@ -9,13 +12,32 @@ import 'package:flutter_food_ordering/viewmodels/base_model.dart';
 import 'package:flutter_food_ordering/viewmodels/order_viewmodel.dart';
 import 'package:flutter_food_ordering/viewmodels/user_viewmodel.dart';
 import 'package:flutter_food_ordering/widgets/center_loading.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:toast/toast.dart';
 
 // ignore: must_be_immutable
 class UserProfilePage extends StatelessWidget {
   UserResponse userResponse;
   OrderResponse orderResponse;
+  ApiProvider apiProvider = getIt<ApiProvider>();
+
+  void changeProfileImage(context, UserViewModel user) async {
+    var image = await ImagePicker.pickImage(
+        source: ImageSource.gallery, maxWidth: 500, maxHeight: 500);
+    if (image != null) {
+      apiProvider.updateUserInfo(image: image).then((newImage) {
+        if (newImage != null) {
+          Toast.show('Update success', context);
+          user.updateImage(newImage);
+        } else {}
+      }).catchError((err) {
+        Toast.show(err.toString(), context);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -32,7 +54,11 @@ class UserProfilePage extends StatelessWidget {
             AppBarAction(),
           ],
           iconTheme: IconThemeData(color: Colors.black),
-          textTheme: TextTheme(title: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold)),
+          textTheme: TextTheme(
+              title: TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold)),
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -40,7 +66,9 @@ class UserProfilePage extends StatelessWidget {
             children: <Widget>[
               Container(
                 margin: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-                child: Text('User Info', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                child: Text('User Info',
+                    style:
+                        TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               ),
               Consumer<UserViewModel>(
                 builder: (context, user, child) {
@@ -62,7 +90,9 @@ class UserProfilePage extends StatelessWidget {
               ),
               Container(
                 margin: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-                child: Text('Order History', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                child: Text('Order History',
+                    style:
+                        TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               ),
               buildUserOrderHistoryList(),
             ],
@@ -77,13 +107,16 @@ class UserProfilePage extends StatelessWidget {
       padding: EdgeInsets.all(12),
       child: Column(
         children: <Widget>[
-          Container(
-            width: 150,
-            height: 150,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                image: NetworkImage('$BASE_URL/uploads/${userResponse.user.profileImg}'),
+          InkWell(
+            onTap: () => changeProfileImage(context, user),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(75),
+              child: CachedNetworkImage(
+                width: 150,
+                height: 150,
+                imageUrl: '$BASE_URL/uploads/${userResponse.user.profileImg}',
+                fit: BoxFit.fitWidth,
+                errorWidget: (context, _, obj) => Icon(Icons.error),
               ),
             ),
           ),
@@ -120,7 +153,8 @@ class UserProfilePage extends StatelessWidget {
                 onPressed: () async {
                   await Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => DeliveryLocationPage()),
+                    MaterialPageRoute(
+                        builder: (context) => DeliveryLocationPage()),
                   );
                   user.getUserInfo();
                 },
@@ -164,21 +198,27 @@ class UserProfilePage extends StatelessWidget {
     return Card(
       margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       shape: RoundedRectangleBorder(
-          side: BorderSide(width: 0.1, color: Colors.black12), borderRadius: BorderRadius.circular(8)),
+          side: BorderSide(width: 0.1, color: Colors.black12),
+          borderRadius: BorderRadius.circular(8)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-            decoration: BoxDecoration(color: mainColor, borderRadius: BorderRadius.vertical(top: Radius.circular(8))),
+            decoration: BoxDecoration(
+                color: mainColor,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(8))),
             width: double.infinity,
             alignment: Alignment.center,
             padding: EdgeInsets.symmetric(vertical: 12),
-            child: Text('Order Date: ' + DateFormat().format(order.orderDate.toLocal()), style: titleStyle),
+            child: Text(
+                'Order Date: ' + DateFormat().format(order.orderDate.toLocal()),
+                style: titleStyle),
           ),
           ...order.items.map((item) {
             return ListTile(
               leading: CircleAvatar(
-                backgroundImage: NetworkImage('$BASE_URL/uploads/${item.food.images[0]}'),
+                backgroundImage:
+                    NetworkImage('$BASE_URL/uploads/${item.food.images[0]}'),
               ),
               trailing: Text('Price: ${item.food.price} \$'),
               title: Text(item.food.name),

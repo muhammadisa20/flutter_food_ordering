@@ -22,13 +22,15 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
   LatLng latLng = LatLng(11.5774552, 104.9038566);
   ApiProvider apiProvider = getIt<ApiProvider>();
   LocationPickedModel locationPickedModel;
+  Geolocator geolocator = Geolocator();
 
   Position position;
   CameraPosition currentPosition;
   ValueNotifier<String> locationString = ValueNotifier<String>('no data');
 
   Future<CameraPosition> getCurrentLocation() async {
-    position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    position = await geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
     currentPosition = CameraPosition(
       zoom: 15,
       target: LatLng(position.latitude, position.longitude),
@@ -42,7 +44,8 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
       );
 
   void getLocationAddress() async {
-    List<Placemark> placeMarks = await Geolocator().placemarkFromCoordinates(latLng.latitude, latLng.longitude);
+    List<Placemark> placeMarks = await Geolocator()
+        .placemarkFromCoordinates(latLng.latitude, latLng.longitude);
     if (placeMarks.length > 0) {
       print(placeMarks[0].toJson());
       locationPickedModel = LocationPickedModel(
@@ -67,7 +70,8 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
   }
 
   void gotoCurrentLocation() async {
-    googleMapController.animateCamera(CameraUpdate.newCameraPosition(currentLocation));
+    googleMapController
+        .animateCamera(CameraUpdate.newCameraPosition(currentLocation));
   }
 
   @override
@@ -103,9 +107,10 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
                       googleMapController = controller;
                     },
                     onCameraMove: (cameraPosition) {
-                      latLng =
-                          LatLng(cameraPosition.target.latitude.toDouble(), cameraPosition.target.longitude.toDouble());
-                      print('Lat: ${cameraPosition.target.latitude}, Long: ${cameraPosition.target.longitude}');
+                      latLng = LatLng(cameraPosition.target.latitude.toDouble(),
+                          cameraPosition.target.longitude.toDouble());
+                      print(
+                          'Lat: ${cameraPosition.target.latitude}, Long: ${cameraPosition.target.longitude}');
                     },
                     onCameraIdle: () {
                       getLocationAddress();
@@ -115,7 +120,8 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
                     alignment: Alignment.center,
                     child: Container(
                       margin: EdgeInsets.only(bottom: 32),
-                      child: Image.asset('assets/pin.png', width: 40, height: 40),
+                      child:
+                          Image.asset('assets/pin.png', width: 40, height: 40),
                     ),
                   ),
                   ValueListenableBuilder(
@@ -128,8 +134,10 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
                             Container(
                               height: 50,
                               width: double.infinity,
-                              margin: EdgeInsets.symmetric(horizontal: 32, vertical: 32),
-                              padding: EdgeInsets.only(right: 24, left: 8, top: 8, bottom: 8),
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 32, vertical: 32),
+                              padding: EdgeInsets.only(
+                                  right: 24, left: 8, top: 8, bottom: 8),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
                                 color: mainColor,
@@ -149,7 +157,8 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
                                   padding: EdgeInsets.all(4),
                                   onPressed: updateDeliveryLocation,
                                   iconSize: 32,
-                                  icon: Icon(Icons.edit_location, color: Colors.black),
+                                  icon: Icon(Icons.edit_location,
+                                      color: Colors.black),
                                 ),
                               ),
                             ),
