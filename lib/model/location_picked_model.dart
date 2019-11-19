@@ -1,14 +1,12 @@
 class LocationPickedModel {
-  String streetName;
-  String khan;
-  String city;
+  String address;
   num lat;
   num lng;
 
   @override
   String toString() {
-    return '$streetName, $khan, $city';
+    return '$address';
   }
 
-  LocationPickedModel({this.streetName, this.khan, this.city, this.lat, this.lng});
+  LocationPickedModel({this.address, this.lat, this.lng});
 }

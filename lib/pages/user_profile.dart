@@ -24,8 +24,7 @@ class UserProfilePage extends StatelessWidget {
   ApiProvider apiProvider = getIt<ApiProvider>();
 
   void changeProfileImage(context, UserViewModel user) async {
-    var image = await ImagePicker.pickImage(
-        source: ImageSource.gallery, maxWidth: 500, maxHeight: 500);
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery, maxWidth: 500, maxHeight: 500);
     if (image != null) {
       apiProvider.updateUserInfo(image: image).then((newImage) {
         if (newImage != null) {
@@ -54,11 +53,7 @@ class UserProfilePage extends StatelessWidget {
             AppBarAction(),
           ],
           iconTheme: IconThemeData(color: Colors.black),
-          textTheme: TextTheme(
-              title: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold)),
+          textTheme: TextTheme(title: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold)),
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -66,9 +61,7 @@ class UserProfilePage extends StatelessWidget {
             children: <Widget>[
               Container(
                 margin: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-                child: Text('User Info',
-                    style:
-                        TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                child: Text('User Info', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               ),
               Consumer<UserViewModel>(
                 builder: (context, user, child) {
@@ -90,9 +83,7 @@ class UserProfilePage extends StatelessWidget {
               ),
               Container(
                 margin: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-                child: Text('Order History',
-                    style:
-                        TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                child: Text('Order History', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               ),
               buildUserOrderHistoryList(),
             ],
@@ -107,10 +98,11 @@ class UserProfilePage extends StatelessWidget {
       padding: EdgeInsets.all(12),
       child: Column(
         children: <Widget>[
-          InkWell(
-            onTap: () => changeProfileImage(context, user),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(75),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(75),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(50),
+              onTap: () => changeProfileImage(context, user),
               child: CachedNetworkImage(
                 width: 150,
                 height: 150,
@@ -153,8 +145,7 @@ class UserProfilePage extends StatelessWidget {
                 onPressed: () async {
                   await Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => DeliveryLocationPage()),
+                    MaterialPageRoute(builder: (context) => DeliveryLocationPage()),
                   );
                   user.getUserInfo();
                 },
@@ -197,28 +188,21 @@ class UserProfilePage extends StatelessWidget {
   Widget buildOrderItem(Order order) {
     return Card(
       margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      shape: RoundedRectangleBorder(
-          side: BorderSide(width: 0.1, color: Colors.black12),
-          borderRadius: BorderRadius.circular(8)),
+      shape: RoundedRectangleBorder(side: BorderSide(width: 0.1, color: Colors.black12), borderRadius: BorderRadius.circular(8)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-            decoration: BoxDecoration(
-                color: mainColor,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(8))),
+            decoration: BoxDecoration(color: mainColor, borderRadius: BorderRadius.vertical(top: Radius.circular(8))),
             width: double.infinity,
             alignment: Alignment.center,
             padding: EdgeInsets.symmetric(vertical: 12),
-            child: Text(
-                'Order Date: ' + DateFormat().format(order.orderDate.toLocal()),
-                style: titleStyle),
+            child: Text('Order Date: ' + DateFormat().format(order.orderDate.toLocal()), style: titleStyle),
           ),
           ...order.items.map((item) {
             return ListTile(
               leading: CircleAvatar(
-                backgroundImage:
-                    NetworkImage('$BASE_URL/uploads/${item.food.images[0]}'),
+                backgroundImage: NetworkImage('$BASE_URL/uploads/${item.food.images[0]}'),
               ),
               trailing: Text('Price: ${item.food.price} \$'),
               title: Text(item.food.name),
@@ -227,8 +211,8 @@ class UserProfilePage extends StatelessWidget {
           }).toList(),
           Divider(thickness: 1.5),
           ListTile(
-            title: Text('Total price: '),
-            trailing: Text('${order.totalPrice} \$'),
+            title: Text('Total price: ', style: titleStyle),
+            trailing: Text('${order.totalPrice} \$', style: titleStyle),
           )
         ],
       ),

@@ -19,7 +19,7 @@ class DeliveryLocationPage extends StatefulWidget {
 class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
   GoogleMapController googleMapController;
   Map<MarkerId, Marker> markers = Map<MarkerId, Marker>();
-  LatLng latLng = LatLng(11.5774552, 104.9038566);
+  LatLng latLng;
   ApiProvider apiProvider = getIt<ApiProvider>();
   LocationPickedModel locationPickedModel;
   Geolocator geolocator = Geolocator();
@@ -29,29 +29,26 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
   ValueNotifier<String> locationString = ValueNotifier<String>('no data');
 
   Future<CameraPosition> getCurrentLocation() async {
-    position = await geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+    position = await geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     currentPosition = CameraPosition(
-      zoom: 15,
+      zoom: 17,
       target: LatLng(position.latitude, position.longitude),
     );
+    getLocationAddress(position.latitude, position.longitude);
     return currentPosition;
   }
 
   CameraPosition get currentLocation => CameraPosition(
         target: LatLng(position.latitude, position.longitude),
-        zoom: 19.151926040649414,
+        zoom: 17,
       );
 
-  void getLocationAddress() async {
-    List<Placemark> placeMarks = await Geolocator()
-        .placemarkFromCoordinates(latLng.latitude, latLng.longitude);
+  void getLocationAddress(double lat, double lng) async {
+    List<Placemark> placeMarks = await Geolocator().placemarkFromCoordinates(lat, lng);
     if (placeMarks.length > 0) {
       print(placeMarks[0].toJson());
       locationPickedModel = LocationPickedModel(
-        streetName: placeMarks[0].thoroughfare,
-        khan: placeMarks[0].subLocality,
-        city: placeMarks[0].locality,
+        address: '${placeMarks[0].name}, ${placeMarks[0].thoroughfare}, ${placeMarks[0].subLocality}, ${placeMarks[0].locality}',
         lat: placeMarks[0].position.latitude,
         lng: placeMarks[0].position.longitude,
       );
@@ -70,8 +67,7 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
   }
 
   void gotoCurrentLocation() async {
-    googleMapController
-        .animateCamera(CameraUpdate.newCameraPosition(currentLocation));
+    googleMapController.animateCamera(CameraUpdate.newCameraPosition(currentLocation));
   }
 
   @override
@@ -107,21 +103,18 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
                       googleMapController = controller;
                     },
                     onCameraMove: (cameraPosition) {
-                      latLng = LatLng(cameraPosition.target.latitude.toDouble(),
-                          cameraPosition.target.longitude.toDouble());
-                      print(
-                          'Lat: ${cameraPosition.target.latitude}, Long: ${cameraPosition.target.longitude}');
+                      latLng = LatLng(cameraPosition.target.latitude.toDouble(), cameraPosition.target.longitude.toDouble());
+                      print('Lat: ${cameraPosition.target.latitude}, Long: ${cameraPosition.target.longitude}');
                     },
                     onCameraIdle: () {
-                      getLocationAddress();
+                      getLocationAddress(latLng.latitude, latLng.longitude);
                     },
                   ),
                   Align(
                     alignment: Alignment.center,
                     child: Container(
                       margin: EdgeInsets.only(bottom: 32),
-                      child:
-                          Image.asset('assets/pin.png', width: 40, height: 40),
+                      child: Image.asset('assets/pin.png', width: 40, height: 40),
                     ),
                   ),
                   ValueListenableBuilder(
@@ -134,10 +127,8 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
                             Container(
                               height: 50,
                               width: double.infinity,
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: 32, vertical: 32),
-                              padding: EdgeInsets.only(
-                                  right: 24, left: 8, top: 8, bottom: 8),
+                              margin: EdgeInsets.symmetric(horizontal: 32, vertical: 32),
+                              padding: EdgeInsets.only(right: 24, left: 8, top: 8, bottom: 8),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
                                 color: mainColor,
@@ -157,8 +148,7 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
                                   padding: EdgeInsets.all(4),
                                   onPressed: updateDeliveryLocation,
                                   iconSize: 32,
-                                  icon: Icon(Icons.edit_location,
-                                      color: Colors.black),
+                                  icon: Icon(Icons.edit_location, color: Colors.black),
                                 ),
                               ),
                             ),

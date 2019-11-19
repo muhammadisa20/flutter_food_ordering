@@ -76,8 +76,7 @@ class ApiProvider {
 
   Future<OrderResponse> fetchUserOrderHistory() async {
     try {
-      var response = await dio
-          .get('$BASE_URL/api/order/user', queryParameters: {"token": token});
+      var response = await dio.get('$BASE_URL/api/order/user', queryParameters: {"token": token});
       print('fetch user order');
       if (response.data['status'] == 1) {
         return OrderResponse.fromJson(response.data);
@@ -93,14 +92,10 @@ class ApiProvider {
   Future<bool> orderFood(MyCartViewModel cart) async {
     try {
       List<Map> data = List.generate(cart.cartItems.length, (index) {
-        return {
-          "id": cart.cartItems[index].food.id,
-          "quantity": cart.cartItems[index].quantity
-        };
+        return {"id": cart.cartItems[index].food.id, "quantity": cart.cartItems[index].quantity};
       }).toList();
 
-      var response = await dio.post('$BASE_URL/api/order/food',
-          queryParameters: {"token": token}, data: data);
+      var response = await dio.post('$BASE_URL/api/order/food', queryParameters: {"token": token}, data: data);
       if (response.data['status'] == 1) {
         print(response.data['message']);
         cart.clearCart();
@@ -115,19 +110,15 @@ class ApiProvider {
     }
   }
 
-  Future<bool> updateUserDeliveryLocation(
-      LocationPickedModel locationPickedModel) async {
+  Future<bool> updateUserDeliveryLocation(LocationPickedModel locationPickedModel) async {
     try {
       Map<String, dynamic> data = {
-        "streetName": locationPickedModel.streetName ?? null,
-        "khan": locationPickedModel.khan ?? null,
-        "city": locationPickedModel.city ?? null,
+        "address": locationPickedModel.address,
         "lat": locationPickedModel.lat,
         "lng": locationPickedModel.lng,
       };
 
-      var response = await dio.patch('$BASE_URL/api/user/$userId',
-          queryParameters: {"token": token}, data: data);
+      var response = await dio.patch('$BASE_URL/api/user/$userId', queryParameters: {"token": token}, data: data);
       if (response.data['status'] == 1) {
         print(response.data['message']);
         return true;
@@ -144,8 +135,7 @@ class ApiProvider {
   Future<String> updateUserInfo({File image}) async {
     try {
       var formData = FormData.fromMap({
-        "profile_img":
-            await MultipartFile.fromFile(image.path, filename: image.path),
+        "profile_img": await MultipartFile.fromFile(image.path, filename: image.path),
       });
 
       var response = await dio.patch(
