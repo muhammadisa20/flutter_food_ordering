@@ -131,7 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
           IconButton(
               icon: Icon(Icons.refresh),
               onPressed: () {
-                foodViewModel.getAllFoods();
+                if (foodViewModel != null) foodViewModel.getAllFoods();
                 if (shopViewModel != null) shopViewModel.getAllShops();
               }),
           Stack(

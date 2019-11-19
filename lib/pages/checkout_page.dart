@@ -32,6 +32,7 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
     isLoading.value = true;
     apiProvider.orderFood(cart).then((success) {
       if (success) {
+        Toast.show('Order success, You can view them in your order', context, duration: 5);
         Navigator.pop(context);
       }
       isLoading.value = false;

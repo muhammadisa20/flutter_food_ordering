@@ -61,7 +61,7 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
 
   void updateDeliveryLocation() {
     apiProvider.updateUserDeliveryLocation(locationPickedModel).then((value) {
-      Toast.show('Delivery location update success', context);
+      Toast.show('Delivery location updated', context);
       Navigator.pop(context, true);
     }).catchError((error) {
       Toast.show(error.toString(), context);

@@ -48,9 +48,7 @@ class UserProfilePage extends StatelessWidget {
           backgroundColor: mainColor,
           title: Text('User Profile'),
           centerTitle: true,
-          actions: <Widget>[
-            AppBarAction(),
-          ],
+          actions: <Widget>[AppBarAction()],
           iconTheme: IconThemeData(color: Colors.black),
           textTheme: TextTheme(title: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold)),
         ),
@@ -108,7 +106,6 @@ class UserProfilePage extends StatelessWidget {
                 imageUrl: '$BASE_URL/uploads/${userResponse.user.profileImg}',
                 fit: BoxFit.fitWidth,
                 fadeInDuration: Duration(milliseconds: 50),
-                placeholder: (context, _) => Center(child: CircularProgressIndicator()),
                 errorWidget: (context, _, obj) => Icon(Icons.error),
               ),
             ),
@@ -190,7 +187,7 @@ class UserProfilePage extends StatelessWidget {
 
   Widget buildOrderItem(Order order) {
     return Card(
-      margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      margin: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
       shape: RoundedRectangleBorder(side: BorderSide(width: 0.1, color: Colors.black12), borderRadius: BorderRadius.circular(8)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

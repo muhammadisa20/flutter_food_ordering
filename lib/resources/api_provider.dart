@@ -158,14 +158,14 @@ class ApiProvider {
 
   void handleExceptionError(dynamic error) {
     if (error is DioError) {
-      print(error.message);
+      print('Dio Error:' + error.message);
       if (error.message.contains('timed out')) {
         throw 'Error Connecting to server!!';
       } else if (error.message.contains('SocketException')) {
         if (error.error.message == "")
           throw error.error.osError.message;
         else
-          throw error.message;
+          throw 'No internet connection';
       }
       throw error.message;
     } else {
