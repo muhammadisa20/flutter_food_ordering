@@ -1,7 +1,9 @@
 import 'dart:async';
-
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
 import 'package:flutter_food_ordering/model/location_picked_model.dart';
 import 'package:flutter_food_ordering/resources/api_provider.dart';
@@ -47,6 +49,15 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
       );
       getLocationAddress(position.latitude, position.longitude);
     }
+
+    var marker = Marker(
+        markerId: MarkerId('current'),
+        icon: await createBitMapFromCanvas(),
+        position: LatLng(currentPosition.target.latitude, currentPosition.target.longitude));
+
+    setState(() {
+      markers[MarkerId('current')] = marker;
+    });
 
     return currentPosition;
   }
@@ -110,7 +121,7 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
               return Stack(
                 children: <Widget>[
                   GoogleMap(
-                    markers: Set<Marker>.of(markers.values),
+                    markers: markers.values.toSet(),
                     mapType: MapType.normal,
                     initialCameraPosition: snapshot.data,
                     onMapCreated: (GoogleMapController controller) {
@@ -209,5 +220,49 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
             );
           }),
     );
+  }
+
+  Future<BitmapDescriptor> createBitMapFromCanvas() async {
+    final ui.PictureRecorder recorder = ui.PictureRecorder();
+    final Canvas canvas = Canvas(recorder, Rect.fromPoints(const Offset(0.0, 0.0), const Offset(200.0, 200.0)));
+    final Paint paint = Paint()
+      ..color = Colors.black.withOpacity(1)
+      ..style = PaintingStyle.fill;
+    canvas.drawRRect(
+        RRect.fromRectAndRadius(const Rect.fromLTWH(0.0, 0.0, 200.0, 200.0), const Radius.circular(8.0)), paint);
+    paintText(canvas);
+//    paintImage(labelIcon, const Rect.fromLTWH(8, 8, 32.0, 32.0), canvas, paint, BoxFit.contain);
+//    ByteData data = await rootBundle.load('assets/pin.png');
+//    ui.Image markerImage = Image.memory(data.buffer.asUint8List()) as ui.Image;
+//    paintImage(markerImage, const Rect.fromLTWH(24.0, 48.0, 110.0, 110.0), canvas, paint, BoxFit.contain);
+    final ui.Picture picture = recorder.endRecording();
+    final img = await picture.toImage(200, 200);
+    final pngByteData = await img.toByteData(format: ui.ImageByteFormat.png);
+    return BitmapDescriptor.fromBytes(Uint8List.view(pngByteData.buffer));
+  }
+
+  void paintText(Canvas canvas) {
+    final textSpan = TextSpan(
+      text: 'My location',
+      style: TextStyle(color: Colors.white, fontSize: 32),
+    );
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout(
+      minWidth: 0,
+      maxWidth: 200,
+    );
+    final offset = Offset(12, 12);
+    textPainter.paint(canvas, offset);
+  }
+
+  paintImage(ui.Image image, Rect outputRect, Canvas canvas, Paint paint, BoxFit fit) async {
+    final Size imageSize = Size(image.width.toDouble(), image.height.toDouble());
+    final FittedSizes sizes = applyBoxFit(fit, imageSize, outputRect.size);
+    final Rect inputSubrect = Alignment.center.inscribe(sizes.source, Offset.zero & imageSize);
+    final Rect outputSubrect = Alignment.center.inscribe(sizes.destination, outputRect);
+    canvas.drawImageRect(image, inputSubrect, outputSubrect, paint);
   }
 }
