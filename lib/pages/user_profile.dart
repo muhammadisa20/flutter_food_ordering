@@ -58,10 +58,10 @@ class UserProfilePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-                child: Text('User Info', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-              ),
+              // Container(
+              //   margin: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+              //   child: Text('User Info', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+              // ),
               Consumer<UserViewModel>(
                 builder: (context, user, child) {
                   userResponse = user.userResponse;
@@ -119,6 +119,7 @@ class UserProfilePage extends StatelessWidget {
               leading: Icon(Icons.person),
               title: Text('Name'),
               subtitle: Text(userResponse.user.name),
+              trailing: IconButton(icon: Icon(Icons.edit), onPressed: () {}),
             ),
           ),
           Card(
@@ -133,6 +134,7 @@ class UserProfilePage extends StatelessWidget {
               leading: Icon(Icons.call),
               title: Text('Phone Number'),
               subtitle: Text(userResponse.user.phoneNumber),
+              trailing: IconButton(icon: Icon(Icons.edit), onPressed: () {}),
             ),
           ),
           Card(

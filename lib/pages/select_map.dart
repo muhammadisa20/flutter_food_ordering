@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
 import 'package:flutter_food_ordering/model/location_picked_model.dart';
@@ -115,10 +116,25 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
                   Align(
                     alignment: Alignment.center,
                     child: Container(
-                      margin: EdgeInsets.only(bottom: 32),
-                      child: Image.asset('assets/pin.png', width: 40, height: 40),
+                      width: 80,
+                      height: 80,
+                      margin: EdgeInsets.only(bottom: 12),
+                      child: FlareActor(
+                        "assets/pin.flr",
+                        alignment: Alignment.center,
+                        fit: BoxFit.contain,
+                        animation: "Search",
+                      ),
                     ),
                   ),
+                  // Align(
+                  //   alignment: Alignment.center,
+                  //   child: Container(
+                  //     width: 10,
+                  //     height: 10,
+                  //     color: Colors.red,
+                  //   ),
+                  // ),
                   ValueListenableBuilder(
                     valueListenable: locationString,
                     builder: (context, value, child) {
