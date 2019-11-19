@@ -12,7 +12,9 @@ import 'package:toast/toast.dart';
 import '../main.dart';
 
 class DeliveryLocationPage extends StatefulWidget {
-  DeliveryLocationPage({Key key}) : super(key: key);
+  final double lat;
+  final double lng;
+  DeliveryLocationPage({Key key, this.lat, this.lng}) : super(key: key);
 
   _DeliveryLocationPageState createState() => _DeliveryLocationPageState();
 }
@@ -23,7 +25,7 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
   LatLng latLng;
   ApiProvider apiProvider = getIt<ApiProvider>();
   LocationPickedModel locationPickedModel;
-  Geolocator geolocator = Geolocator();
+  Geolocator geoLocator = Geolocator();
   Future<CameraPosition> currentPos;
 
   Position position;
@@ -31,12 +33,21 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
   ValueNotifier<String> locationString = ValueNotifier<String>('no data');
 
   Future<CameraPosition> getCurrentLocation() async {
-    position = await geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    currentPosition = CameraPosition(
-      zoom: 17,
-      target: LatLng(position.latitude, position.longitude),
-    );
-    getLocationAddress(position.latitude, position.longitude);
+    if (widget.lat != null) {
+      getLocationAddress(widget.lat, widget.lng);
+      currentPosition = CameraPosition(
+        zoom: 17,
+        target: LatLng(widget.lat, widget.lng),
+      );
+    } else {
+      position = await geoLocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      currentPosition = CameraPosition(
+        zoom: 17,
+        target: LatLng(position.latitude, position.longitude),
+      );
+      getLocationAddress(position.latitude, position.longitude);
+    }
+
     return currentPosition;
   }
 
@@ -50,7 +61,8 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
     if (placeMarks.length > 0) {
       print(placeMarks[0].toJson());
       locationPickedModel = LocationPickedModel(
-        address: '${placeMarks[0].name}, ${placeMarks[0].thoroughfare}, ${placeMarks[0].subLocality}, ${placeMarks[0].locality}',
+        address:
+            '${placeMarks[0].name}, ${placeMarks[0].thoroughfare}, ${placeMarks[0].subLocality}, ${placeMarks[0].locality}',
         lat: placeMarks[0].position.latitude,
         lng: placeMarks[0].position.longitude,
       );
@@ -106,7 +118,8 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
                     },
                     onCameraMove: (cameraPosition) {
                       locationString.value = '';
-                      latLng = LatLng(cameraPosition.target.latitude.toDouble(), cameraPosition.target.longitude.toDouble());
+                      latLng =
+                          LatLng(cameraPosition.target.latitude.toDouble(), cameraPosition.target.longitude.toDouble());
                       print('Lat: ${cameraPosition.target.latitude}, Long: ${cameraPosition.target.longitude}');
                     },
                     onCameraIdle: () {

@@ -145,7 +145,11 @@ class UserProfilePage extends StatelessWidget {
                 onPressed: () async {
                   await Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => DeliveryLocationPage()),
+                    MaterialPageRoute(
+                        builder: (context) => DeliveryLocationPage(
+                              lat: userResponse.user.location?.latitude ?? null,
+                              lng: userResponse.user.location?.longitude ?? null,
+                            )),
                   );
                   user.getUserInfo();
                 },
@@ -188,7 +192,8 @@ class UserProfilePage extends StatelessWidget {
   Widget buildOrderItem(Order order) {
     return Card(
       margin: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-      shape: RoundedRectangleBorder(side: BorderSide(width: 0.1, color: Colors.black12), borderRadius: BorderRadius.circular(8)),
+      shape: RoundedRectangleBorder(
+          side: BorderSide(width: 0.1, color: Colors.black12), borderRadius: BorderRadius.circular(8)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
