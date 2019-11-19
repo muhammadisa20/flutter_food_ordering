@@ -23,6 +23,7 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
   ApiProvider apiProvider = getIt<ApiProvider>();
   LocationPickedModel locationPickedModel;
   Geolocator geolocator = Geolocator();
+  Future<CameraPosition> currentPos;
 
   Position position;
   CameraPosition currentPosition;
@@ -72,7 +73,7 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
 
   @override
   void initState() {
-    getCurrentLocation();
+    currentPos = getCurrentLocation();
     super.initState();
   }
 
@@ -89,8 +90,8 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
           )
         ],
       ),
-      body: FutureBuilder<Object>(
-          future: getCurrentLocation(),
+      body: FutureBuilder<CameraPosition>(
+          future: currentPos,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return Stack(
@@ -98,11 +99,12 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
                   GoogleMap(
                     markers: Set<Marker>.of(markers.values),
                     mapType: MapType.normal,
-                    initialCameraPosition: currentPosition,
+                    initialCameraPosition: snapshot.data,
                     onMapCreated: (GoogleMapController controller) {
                       googleMapController = controller;
                     },
                     onCameraMove: (cameraPosition) {
+                      locationString.value = '';
                       latLng = LatLng(cameraPosition.target.latitude.toDouble(), cameraPosition.target.longitude.toDouble());
                       print('Lat: ${cameraPosition.target.latitude}, Long: ${cameraPosition.target.longitude}');
                     },
@@ -133,7 +135,13 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
                                 borderRadius: BorderRadius.circular(12),
                                 color: mainColor,
                               ),
-                              child: Text(value),
+                              child: Center(
+                                child: value == ''
+                                    ? CircularProgressIndicator(
+                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                                      )
+                                    : Text(value),
+                              ),
                             ),
                             Positioned(
                               right: 12,
@@ -148,7 +156,7 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
                                   padding: EdgeInsets.all(4),
                                   onPressed: updateDeliveryLocation,
                                   iconSize: 32,
-                                  icon: Icon(Icons.edit_location, color: Colors.black),
+                                  icon: Icon(Icons.add_location, color: Colors.black),
                                 ),
                               ),
                             ),

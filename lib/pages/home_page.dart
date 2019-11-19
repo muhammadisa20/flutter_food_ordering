@@ -29,8 +29,8 @@ class _MyHomePageState extends State<MyHomePage> {
   ValueNotifier<int> pageIndex = ValueNotifier(0);
 
   List get pages => [
-        buildFoodList(),
         buildShopList(),
+        buildFoodList(),
       ];
 
   showCart() {
@@ -50,12 +50,10 @@ class _MyHomePageState extends State<MyHomePage> {
   switchUser() async {
     if (userId == '5dc917096e1c39409c4534c7') {
       userId = '5dcc00806b416c12ecc5bd93';
-      token =
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZGNjMDA4MDZiNDE2YzEyZWNjNWJkOTMiLCJpYXQiOjE1NzQwNDMxNjd9.MjDL4CbEVNhF-D8Sr2R6GKyyYI2nVR348u7Y1n9JMOo';
+      token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZGNjMDA4MDZiNDE2YzEyZWNjNWJkOTMiLCJpYXQiOjE1NzQwNDMxNjd9.MjDL4CbEVNhF-D8Sr2R6GKyyYI2nVR348u7Y1n9JMOo';
     } else {
       userId = '5dc917096e1c39409c4534c7';
-      token =
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZGM5MTcwOTZlMWMzOTQwOWM0NTM0YzciLCJpYXQiOjE1NzQwNDMyNzJ9.hlcBmrekYYeddX-VIo-_GVAJlzJnO3Zha6Y2n9Yy-co';
+      token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZGM5MTcwOTZlMWMzOTQwOWM0NTM0YzciLCJpYXQiOjE1NzQwNDMyNzJ9.hlcBmrekYYeddX-VIo-_GVAJlzJnO3Zha6Y2n9Yy-co';
     }
   }
 
@@ -105,12 +103,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 pageController.jumpToPage(index);
                 pageIndex.value = index;
               },
+              selectedItemColor: mainColor,
               currentIndex: page,
               items: [
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.fastfood), title: Text('Foods')),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.shopping_cart), title: Text('Shop')),
+                BottomNavigationBarItem(icon: Icon(Icons.fastfood), title: Text('Shops')),
+                BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), title: Text('Foods')),
               ],
             );
           },
@@ -145,8 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Container(
                   alignment: Alignment.center,
                   padding: EdgeInsets.all(4),
-                  decoration:
-                      BoxDecoration(shape: BoxShape.circle, color: mainColor),
+                  decoration: BoxDecoration(shape: BoxShape.circle, color: mainColor),
                   child: Text(
                     '$items',
                     style: TextStyle(fontSize: 12, color: Colors.black),
@@ -172,8 +168,7 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: const EdgeInsets.all(8.0),
             child: ChoiceChip(
               selectedColor: mainColor,
-              labelStyle: TextStyle(
-                  color: value == index ? Colors.white : Colors.black),
+              labelStyle: TextStyle(color: value == index ? Colors.white : Colors.black),
               label: Text(FoodTypes.values[index].toString().split('.').last),
               selected: value == index,
               onSelected: (selected) {
@@ -235,6 +230,7 @@ class _MyHomePageState extends State<MyHomePage> {
             return GridView.count(
               childAspectRatio: 0.65,
               mainAxisSpacing: 4,
+              padding: EdgeInsets.all(0),
               crossAxisSpacing: 4,
               shrinkWrap: true,
               crossAxisCount: 2,

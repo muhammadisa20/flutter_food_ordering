@@ -70,9 +70,9 @@ class ShopCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text(shop.name, style: titleStyle),
+          Text(shop.name, style: titleStyle, maxLines: 2, overflow: TextOverflow.ellipsis),
           SizedBox(height: 4),
-          Text(shop.description, style: infoStyle, maxLines: 2),
+          Text(shop.description, style: infoStyle, maxLines: shop.name.length > 15 ? 1 : 2, overflow: TextOverflow.ellipsis),
         ],
       ),
     );

@@ -20,7 +20,6 @@ import 'package:toast/toast.dart';
 // ignore: must_be_immutable
 class UserProfilePage extends StatelessWidget {
   UserResponse userResponse;
-  OrderResponse orderResponse;
   ApiProvider apiProvider = getIt<ApiProvider>();
 
   void changeProfileImage(context, UserViewModel user) async {
@@ -108,6 +107,8 @@ class UserProfilePage extends StatelessWidget {
                 height: 150,
                 imageUrl: '$BASE_URL/uploads/${userResponse.user.profileImg}',
                 fit: BoxFit.fitWidth,
+                fadeInDuration: Duration(milliseconds: 50),
+                placeholder: (context, _) => Center(child: CircularProgressIndicator()),
                 errorWidget: (context, _, obj) => Icon(Icons.error),
               ),
             ),
@@ -160,7 +161,6 @@ class UserProfilePage extends StatelessWidget {
   Widget buildUserOrderHistoryList() {
     return Consumer<OrderViewModel>(
       builder: (context, order, child) {
-        orderResponse = order.orderResponse;
         switch (order.state) {
           case ViewState.error:
             return CenterLoadingError(Text(order.errorMessage));
@@ -169,6 +169,7 @@ class UserProfilePage extends StatelessWidget {
             return CenterLoadingError(CircularProgressIndicator());
             break;
           case ViewState.ready:
+            order.orderResponse.order = order.orderResponse.order.reversed.toList();
             return ListView.builder(
               shrinkWrap: true,
               primary: false,
