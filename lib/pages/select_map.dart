@@ -35,6 +35,7 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
   Future<CameraPosition> getCurrentLocation() async {
     if (widget.lat != null) {
       getLocationAddress(widget.lat, widget.lng);
+      position = Position(latitude: widget.lat, longitude: widget.lng);
       currentPosition = CameraPosition(
         zoom: 17,
         target: LatLng(widget.lat, widget.lng),
@@ -61,8 +62,7 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
     if (placeMarks.length > 0) {
       print(placeMarks[0].toJson());
       locationPickedModel = LocationPickedModel(
-        address:
-            '${placeMarks[0].name}, ${placeMarks[0].thoroughfare}, ${placeMarks[0].subLocality}, ${placeMarks[0].locality}',
+        address: '${placeMarks[0].name}, ${placeMarks[0].thoroughfare}, ${placeMarks[0].subLocality}, ${placeMarks[0].locality}',
         lat: placeMarks[0].position.latitude,
         lng: placeMarks[0].position.longitude,
       );
@@ -118,9 +118,7 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
                     },
                     onCameraMove: (cameraPosition) {
                       locationString.value = '';
-                      latLng =
-                          LatLng(cameraPosition.target.latitude.toDouble(), cameraPosition.target.longitude.toDouble());
-                      print('Lat: ${cameraPosition.target.latitude}, Long: ${cameraPosition.target.longitude}');
+                      latLng = LatLng(cameraPosition.target.latitude.toDouble(), cameraPosition.target.longitude.toDouble());
                     },
                     onCameraIdle: () {
                       getLocationAddress(latLng.latitude, latLng.longitude);
