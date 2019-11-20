@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
 import 'package:flutter_food_ordering/pages/home_page.dart';
 import 'package:flutter_food_ordering/pages/login_page.dart';
+import 'package:flutter_food_ordering/pages/splash_page.dart';
 import 'package:flutter_food_ordering/resources/api_provider.dart';
 import 'package:flutter_food_ordering/viewmodels/cart_viewmodel.dart';
 import 'package:get_it/get_it.dart';
@@ -30,8 +31,9 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: custom,
+          primaryIconTheme: IconThemeData(color: Colors.black),
         ),
-        home: LoginPage(),
+        home: SpashlScreenPage(),
       ),
     );
   }

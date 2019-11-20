@@ -36,6 +36,18 @@ class UserProfilePage extends StatelessWidget {
     }
   }
 
+  void changeDeliveryLocation(context, user) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => DeliveryLocationPage(
+                lat: userResponse.user.location?.latitude ?? null,
+                lng: userResponse.user.location?.longitude ?? null,
+              )),
+    );
+    user.getUserInfo();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -137,23 +149,11 @@ class UserProfilePage extends StatelessWidget {
           Card(
             child: ListTile(
               isThreeLine: true,
+              onTap: () => changeDeliveryLocation(context, user),
               leading: Icon(Icons.my_location),
               title: Text('Delivery Location'),
               subtitle: Text(userResponse.user.location.toString()),
-              trailing: IconButton(
-                icon: Icon(Icons.map),
-                onPressed: () async {
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => DeliveryLocationPage(
-                              lat: userResponse.user.location?.latitude ?? null,
-                              lng: userResponse.user.location?.longitude ?? null,
-                            )),
-                  );
-                  user.getUserInfo();
-                },
-              ),
+              trailing: IconButton(icon: Icon(Icons.edit), onPressed: null),
             ),
           ),
         ],

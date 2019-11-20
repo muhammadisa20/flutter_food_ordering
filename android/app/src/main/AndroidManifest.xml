@@ -12,8 +12,8 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="flutter_food_ordering"
-        android:icon="@mipmap/ic_launcher"
+        android:label="Food Ordering"
+        android:icon="@mipmap/launcher_icon"
         tools:ignore="GoogleAppIndexingWarning">
         <meta-data android:name="com.google.android.geo.API_KEY"
                android:value="AIzaSyA8QXgMcqX1bNyfaJTs9ufUGWcFO8K75-4"/>

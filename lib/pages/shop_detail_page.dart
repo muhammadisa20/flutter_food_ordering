@@ -5,7 +5,9 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
 import 'package:flutter_food_ordering/model/shop_response.dart';
 import 'package:flutter_food_ordering/viewmodels/base_model.dart';
+import 'package:flutter_food_ordering/viewmodels/cart_viewmodel.dart';
 import 'package:flutter_food_ordering/viewmodels/food_viewmodels.dart';
+import 'package:flutter_food_ordering/widgets/cart_icon.dart';
 import 'package:flutter_food_ordering/widgets/center_loading.dart';
 import 'package:flutter_food_ordering/widgets/food_card.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +23,7 @@ class ShopDetailPage extends StatefulWidget {
 class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProviderStateMixin {
   TabController tabController;
   num top = double.infinity;
+  int items = 0;
   @override
   void initState() {
     tabController = TabController(vsync: this, length: 2);
@@ -44,6 +47,12 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
                     sliver: SliverAppBar(
                       snap: false,
                       pinned: true,
+                      actions: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+                          child: CartIcon(color: Colors.white),
+                        ),
+                      ],
                       floating: true,
                       expandedHeight: 250,
                       flexibleSpace: LayoutBuilder(

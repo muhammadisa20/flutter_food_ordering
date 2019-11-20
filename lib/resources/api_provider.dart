@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
 import 'package:flutter_food_ordering/model/foods_response.dart';
@@ -14,11 +13,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class ApiProvider {
   var dio = Dio()..options.connectTimeout = 10000;
   final fss = FlutterSecureStorage();
-
-  void getUserData() async {
-    String userId = await fss.read(key: 'userId');
-    String token = await fss.read(key: 'token');
-  }
 
   Future<FoodResponse> fetchAllFoods() async {
     Response response;

@@ -11,6 +11,7 @@ import 'package:flutter_food_ordering/viewmodels/cart_viewmodel.dart';
 import 'package:flutter_food_ordering/viewmodels/food_viewmodels.dart';
 import 'package:flutter_food_ordering/viewmodels/shop_viewmodel.dart';
 import 'package:flutter_food_ordering/widgets/cart_bottom_sheet.dart';
+import 'package:flutter_food_ordering/widgets/cart_icon.dart';
 import 'package:flutter_food_ordering/widgets/center_loading.dart';
 import 'package:flutter_food_ordering/widgets/food_card.dart';
 import 'package:flutter_food_ordering/widgets/shop_card.dart';
@@ -34,14 +35,6 @@ class _MyHomePageState extends State<MyHomePage> {
         buildShopList(),
         buildFoodList(),
       ];
-
-  showCart() {
-    showModalBottomSheet(
-      shape: roundedRectangle40,
-      context: context,
-      builder: (context) => CartBottomSheet(),
-    );
-  }
 
   viewProfile() {
     Navigator.of(context).push(
@@ -117,40 +110,21 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget buildAppBar() {
-    int items = 0;
-    Provider.of<MyCartViewModel>(context).cartItems.forEach((cart) {
-      items += cart.quantity;
-    });
     return SafeArea(
       child: Row(
         children: <Widget>[
           Text('MENU', style: headerStyle),
           Spacer(),
-          IconButton(icon: Icon(Icons.exit_to_app), onPressed: logOutUser),
           IconButton(icon: Icon(Icons.person), onPressed: viewProfile),
           IconButton(
-              icon: Icon(Icons.refresh),
-              onPressed: () {
-                if (foodViewModel != null) foodViewModel.getAllFoods();
-                if (shopViewModel != null) shopViewModel.getAllShops();
-              }),
-          Stack(
-            children: <Widget>[
-              IconButton(icon: Icon(Icons.shopping_cart), onPressed: showCart),
-              Positioned(
-                right: 0,
-                child: Container(
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.all(4),
-                  decoration: BoxDecoration(shape: BoxShape.circle, color: mainColor),
-                  child: Text(
-                    '$items',
-                    style: TextStyle(fontSize: 12, color: Colors.black),
-                  ),
-                ),
-              ),
-            ],
+            icon: Icon(Icons.refresh),
+            onPressed: () {
+              if (foodViewModel != null) foodViewModel.getAllFoods();
+              if (shopViewModel != null) shopViewModel.getAllShops();
+            },
           ),
+          CartIcon(),
+          IconButton(icon: Icon(Icons.exit_to_app), onPressed: logOutUser),
         ],
       ),
     );

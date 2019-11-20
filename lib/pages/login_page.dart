@@ -13,13 +13,14 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
   ApiProvider apiProvider = getIt<ApiProvider>();
-  TextEditingController emailTC = TextEditingController(text: 'user2@gmail.com');
+  TextEditingController emailTC = TextEditingController(text: 'user1@gmail.com');
   TextEditingController passwordTC = TextEditingController(text: '123456');
   TextStyle textFieldStyle = TextStyle(fontSize: 20);
 
   //method
-  void onLogin() {
+  void onLogin(context) {
     if (formKey.currentState.validate()) {
       apiProvider.loginUser(emailTC.text, passwordTC.text).then((loginResponse) {
         saveUserData(loginResponse);
@@ -27,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
           MaterialPageRoute(builder: (context) => MyHomePage()),
         );
       }).catchError((err) {
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text(err.toString())));
+        scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(err.toString())));
       });
     }
   }
@@ -41,12 +42,13 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       body: ListView(
         children: <Widget>[
           Stack(
             children: <Widget>[
               Container(
-                height: MediaQuery.of(context).size.height * 0.7,
+                height: MediaQuery.of(context).size.height * 0.6,
                 color: mainColor,
               ),
               Container(
@@ -57,9 +59,9 @@ class _LoginPageState extends State<LoginPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       SizedBox(height: 54),
-                      Text('FOOD', style: TextStyle(fontSize: 64, fontWeight: FontWeight.bold)),
+                      Text('FOOD', style: TextStyle(fontSize: 54, fontWeight: FontWeight.bold)),
                       Container(
-                        width: 160,
+                        width: 135,
                         height: 6,
                         color: Colors.black,
                       ),
@@ -70,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                         validator: (value) => value.length > 6 ? null : 'Please input valid email',
                         decoration: InputDecoration(
                           hintText: 'email',
-                          prefixIcon: Icon(Icons.email),
+                          prefixIcon: Icon(Icons.email, color: Colors.black),
                         ),
                       ),
                       SizedBox(height: 42),
@@ -81,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
                         validator: (value) => value.length > 5 ? null : 'Please input valid password',
                         decoration: InputDecoration(
                           hintText: 'password',
-                          prefixIcon: Icon(Icons.vpn_key),
+                          prefixIcon: Icon(Icons.vpn_key, color: Colors.black),
                         ),
                       ),
                       SizedBox(height: 32),
@@ -90,10 +92,10 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.7 - 24, left: 32, right: 32),
+                margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.6 - 24, left: 32, right: 32),
                 width: double.infinity,
                 child: RaisedButton(
-                  onPressed: onLogin,
+                  onPressed: () => onLogin(context),
                   padding: EdgeInsets.all(12),
                   child: Text('Login', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
                   color: Colors.black,

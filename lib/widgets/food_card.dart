@@ -39,18 +39,18 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
                 buildPriceInfo(),
               ],
             ),
-            Align(
-              alignment: Alignment.topRight,
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: mainColor,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-                ),
-                child: Text(food.shop.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-              ),
-            )
+            // Align(
+            //   alignment: Alignment.topRight,
+            //   child: Container(
+            //     width: double.infinity,
+            //     padding: EdgeInsets.all(4),
+            //     decoration: BoxDecoration(
+            //       color: mainColor,
+            //       borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+            //     ),
+            //     child: Text(food.shop.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+            //   ),
+            // )
           ],
         ),
       ),
@@ -130,15 +130,18 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
             '\$ ${food.price}',
             style: titleStyle,
           ),
-          InkWell(
-            onTap: addItemToCard,
-            splashColor: Colors.white70,
-            customBorder: roundedRectangle4,
-            child: Card(
-              margin: EdgeInsets.zero,
-              shape: roundedRectangle4,
-              color: mainColor,
-              child: Icon(Icons.add),
+          Card(
+            margin: EdgeInsets.zero,
+            shape: roundedRectangle4,
+            color: mainColor,
+            child: InkWell(
+              onTap: addItemToCard,
+              splashColor: Colors.white70,
+              customBorder: roundedRectangle4,
+              child: Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Icon(Icons.add_shopping_cart),
+              ),
             ),
           )
         ],

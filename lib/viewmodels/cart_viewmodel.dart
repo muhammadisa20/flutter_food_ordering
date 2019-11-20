@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_food_ordering/model/foods_response.dart';
 
 class MyCartViewModel extends ChangeNotifier {
-  List<CartItem> items = [];
-  List<CartItem> get cartItems => items;
+  List<CartItem> _items = [];
+  List<CartItem> get cartItems => _items;
 
   bool addItem(CartItem cartItem) {
     for (CartItem cart in cartItems) {
@@ -17,13 +17,13 @@ class MyCartViewModel extends ChangeNotifier {
       }
     }
 
-    items.add(cartItem);
+    _items.add(cartItem);
     notifyListeners();
     return true;
   }
 
   void clearCart() {
-    items.clear();
+    _items.clear();
     notifyListeners();
   }
 

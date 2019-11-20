@@ -26,34 +26,33 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
   ApiProvider apiProvider = getIt<ApiProvider>();
   LocationPickedModel locationPickedModel;
   Geolocator geoLocator = Geolocator();
-  Future<CameraPosition> currentPos;
+  Future<CameraPosition> startCameraPosition;
 
-  Position position;
+  Position gpsLocation;
   CameraPosition currentPosition;
   ValueNotifier<String> locationString = ValueNotifier<String>('no data');
 
   Future<CameraPosition> getCurrentLocation() async {
+    gpsLocation = await geoLocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     if (widget.lat != null) {
       getLocationAddress(widget.lat, widget.lng);
-      position = Position(latitude: widget.lat, longitude: widget.lng);
       currentPosition = CameraPosition(
         zoom: 17,
         target: LatLng(widget.lat, widget.lng),
       );
     } else {
-      position = await geoLocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      getLocationAddress(gpsLocation.latitude, gpsLocation.longitude);
       currentPosition = CameraPosition(
         zoom: 17,
-        target: LatLng(position.latitude, position.longitude),
+        target: LatLng(gpsLocation.latitude, gpsLocation.longitude),
       );
-      getLocationAddress(position.latitude, position.longitude);
     }
 
     return currentPosition;
   }
 
   CameraPosition get currentLocation => CameraPosition(
-        target: LatLng(position.latitude, position.longitude),
+        target: LatLng(gpsLocation.latitude, gpsLocation.longitude),
         zoom: 17,
       );
 
@@ -86,7 +85,7 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
 
   @override
   void initState() {
-    currentPos = getCurrentLocation();
+    startCameraPosition = getCurrentLocation();
     super.initState();
   }
 
@@ -100,11 +99,11 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
           IconButton(
             icon: Icon(Icons.my_location),
             onPressed: gotoCurrentLocation,
-          )
+          ),
         ],
       ),
       body: FutureBuilder<CameraPosition>(
-          future: currentPos,
+          future: startCameraPosition,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return Stack(
@@ -138,14 +137,6 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
                       ),
                     ),
                   ),
-                  // Align(
-                  //   alignment: Alignment.center,
-                  //   child: Container(
-                  //     width: 10,
-                  //     height: 10,
-                  //     color: Colors.red,
-                  //   ),
-                  // ),
                   ValueListenableBuilder(
                     valueListenable: locationString,
                     builder: (context, value, child) {
