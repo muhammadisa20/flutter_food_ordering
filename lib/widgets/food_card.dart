@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_food_ordering/constants/values.dart';
+import 'package:flutter_food_ordering/constants/app_constant.dart';
 import 'package:flutter_food_ordering/model/foods_response.dart';
 import 'package:flutter_food_ordering/viewmodels/cart_viewmodel.dart';
 import 'package:flutter_food_ordering/widgets/cart_bottom_sheet.dart';

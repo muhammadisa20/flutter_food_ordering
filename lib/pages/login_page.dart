@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_food_ordering/constants/values.dart';
+import 'package:flutter_food_ordering/constants/app_constant.dart';
 import 'package:flutter_food_ordering/main.dart';
 import 'package:flutter_food_ordering/model/login_response.dart';
 import 'package:flutter_food_ordering/pages/home_page.dart';
@@ -18,16 +18,21 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController emailTC = TextEditingController(text: 'user1@gmail.com');
   TextEditingController passwordTC = TextEditingController(text: '123456');
   TextStyle textFieldStyle = TextStyle(fontSize: 20);
+  ValueNotifier<bool> isLoading = ValueNotifier(false);
+  ScrollController scrollController;
 
   //method
   void onLogin(context) {
     if (formKey.currentState.validate()) {
+      isLoading.value = true;
       apiProvider.loginUser(emailTC.text, passwordTC.text).then((loginResponse) {
+        isLoading.value = false;
         saveUserData(loginResponse);
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => MyHomePage()),
         );
       }).catchError((err) {
+        isLoading.value = false;
         scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(err.toString())));
       });
     }
@@ -40,10 +45,17 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   @override
+  void initState() {
+    scrollController = ScrollController();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
       body: ListView(
+        controller: scrollController,
         children: <Widget>[
           Stack(
             children: <Widget>[
@@ -67,16 +79,19 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       SizedBox(height: 54),
                       TextFormField(
+                        onTap: () => scrollController.jumpTo(scrollController.position.maxScrollExtent),
                         controller: emailTC,
                         style: textFieldStyle,
                         validator: (value) => value.length > 6 ? null : 'Please input valid email',
                         decoration: InputDecoration(
+                          hasFloatingPlaceholder: true,
                           hintText: 'email',
                           prefixIcon: Icon(Icons.email, color: Colors.black),
                         ),
                       ),
                       SizedBox(height: 42),
                       TextFormField(
+                        onTap: () => scrollController.jumpTo(scrollController.position.maxScrollExtent),
                         controller: passwordTC,
                         style: textFieldStyle,
                         obscureText: true,
@@ -91,16 +106,22 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              Container(
-                margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.6 - 24, left: 32, right: 32),
-                width: double.infinity,
-                child: RaisedButton(
-                  onPressed: () => onLogin(context),
-                  padding: EdgeInsets.all(12),
-                  child: Text('Login', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
-                  color: Colors.black,
-                ),
-              )
+              ValueListenableBuilder(
+                  valueListenable: isLoading,
+                  builder: (context, loading, child) {
+                    return Container(
+                      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.6 - 24, left: 32, right: 32),
+                      width: double.infinity,
+                      child: RaisedButton(
+                        onPressed: () => onLogin(context),
+                        padding: EdgeInsets.all(12),
+                        child: loading
+                            ? CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white))
+                            : Text('Login', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+                        color: Colors.black,
+                      ),
+                    );
+                  })
             ],
           ),
         ],

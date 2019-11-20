@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_food_ordering/constants/values.dart';
+import 'package:flutter_food_ordering/constants/app_constant.dart';
 import 'package:flutter_food_ordering/pages/home_page.dart';
 import 'package:flutter_food_ordering/pages/login_page.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';

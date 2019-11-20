@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_food_ordering/constants/values.dart';
+import 'package:flutter_food_ordering/constants/app_constant.dart';
 import 'package:flutter_food_ordering/model/location_picked_model.dart';
 import 'package:flutter_food_ordering/resources/api_provider.dart';
 import 'package:geolocator/geolocator.dart';

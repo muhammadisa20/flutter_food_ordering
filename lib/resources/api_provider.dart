@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:flutter_food_ordering/constants/values.dart';
+import 'package:flutter_food_ordering/constants/app_constant.dart';
 import 'package:flutter_food_ordering/model/foods_response.dart';
 import 'package:flutter_food_ordering/model/location_picked_model.dart';
 import 'package:flutter_food_ordering/model/login_response.dart';

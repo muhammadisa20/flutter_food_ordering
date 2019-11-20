@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_food_ordering/constants/values.dart';
+import 'package:flutter_food_ordering/constants/app_constant.dart';
 import 'package:flutter_food_ordering/model/shop_response.dart';
 import 'package:flutter_food_ordering/viewmodels/base_model.dart';
 import 'package:flutter_food_ordering/viewmodels/cart_viewmodel.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_food_ordering/constants/values.dart';
+import 'package:flutter_food_ordering/constants/app_constant.dart';
 import 'package:flutter_food_ordering/pages/checkout_page.dart';
 import 'package:flutter_food_ordering/viewmodels/cart_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -63,8 +63,7 @@ class CartBottomSheet extends StatelessWidget {
         itemBuilder: (context, index) {
           return Card(
             child: ListTile(
-              leading: CircleAvatar(
-                  backgroundImage: NetworkImage('$BASE_URL/uploads/${cart.cartItems[index].food.images[0]}')),
+              leading: CircleAvatar(backgroundImage: NetworkImage('$BASE_URL/uploads/${cart.cartItems[index].food.images[0]}')),
               title: Text('${cart.cartItems[index].food.name}', style: subtitleStyle),
               subtitle: Text('\$ ${cart.cartItems[index].food.price}'),
               trailing: Text('x ${cart.cartItems[index].quantity}', style: subtitleStyle),

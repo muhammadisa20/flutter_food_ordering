@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_food_ordering/constants/values.dart';
+import 'package:flutter_food_ordering/constants/app_constant.dart';
 import 'package:flutter_food_ordering/model/foods_response.dart';
 import 'package:flutter_food_ordering/model/shop_response.dart' as prefix0;
 import 'package:flutter_food_ordering/pages/login_page.dart';
