@@ -6,6 +6,7 @@ import 'package:flutter_food_ordering/constants/values.dart';
 import 'package:flutter_food_ordering/model/location_picked_model.dart';
 import 'package:flutter_food_ordering/resources/api_provider.dart';
 import 'package:geolocator/geolocator.dart';
+import "package:google_maps_webservice/places.dart";
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:toast/toast.dart';
 
@@ -21,6 +22,7 @@ class DeliveryLocationPage extends StatefulWidget {
 
 class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
   GoogleMapController googleMapController;
+  final places = new GoogleMapsPlaces(apiKey: "AIzaSyAmUAM4yFRvZnPbjAAyCDWMacfOK16hHNo");
   Map<MarkerId, Marker> markers = Map<MarkerId, Marker>();
   LatLng latLng;
   ApiProvider apiProvider = getIt<ApiProvider>();
@@ -83,6 +85,21 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
     googleMapController.animateCamera(CameraUpdate.newCameraPosition(currentLocation));
   }
 
+  void searchPlace(String value) async {
+    PlacesSearchResponse response = await places.searchByText(value);
+    print(response.status);
+    if (response.results.length >= 1) {
+      var latLng = LatLng(response.results[0].geometry.location.lat, response.results[0].geometry.location.lng);
+      print(response.results[0].name);
+      googleMapController.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: latLng,
+          zoom: 17,
+        ),
+      ));
+    }
+  }
+
   @override
   void initState() {
     startCameraPosition = getCurrentLocation();
@@ -134,6 +151,20 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
                         alignment: Alignment.center,
                         fit: BoxFit.contain,
                         animation: "Search",
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: Card(
+                      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                      child: TextField(
+                        onSubmitted: (value) => searchPlace(value),
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                          hintText: 'Places',
+                          border: InputBorder.none,
+                        ),
                       ),
                     ),
                   ),
