@@ -192,8 +192,7 @@ class UserProfilePage extends StatelessWidget {
   Widget buildOrderItem(Order order) {
     return Card(
       margin: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-      shape: RoundedRectangleBorder(
-          side: BorderSide(width: 0.1, color: Colors.black12), borderRadius: BorderRadius.circular(8)),
+      shape: RoundedRectangleBorder(side: BorderSide(width: 0.1, color: Colors.black12), borderRadius: BorderRadius.circular(8)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[

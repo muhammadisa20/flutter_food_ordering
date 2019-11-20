@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
 import 'package:flutter_food_ordering/model/foods_response.dart';
 import 'package:flutter_food_ordering/model/shop_response.dart' as prefix0;
+import 'package:flutter_food_ordering/pages/login_page.dart';
 import 'package:flutter_food_ordering/pages/user_profile.dart';
 import 'package:flutter_food_ordering/resources/api_provider.dart';
 import 'package:flutter_food_ordering/viewmodels/base_model.dart';
@@ -13,6 +14,7 @@ import 'package:flutter_food_ordering/widgets/cart_bottom_sheet.dart';
 import 'package:flutter_food_ordering/widgets/center_loading.dart';
 import 'package:flutter_food_ordering/widgets/food_card.dart';
 import 'package:flutter_food_ordering/widgets/shop_card.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -47,14 +49,12 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  switchUser() async {
-    if (userId == '5dc917096e1c39409c4534c7') {
-      userId = '5dcc00806b416c12ecc5bd93';
-      token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZGNjMDA4MDZiNDE2YzEyZWNjNWJkOTMiLCJpYXQiOjE1NzQwNDMxNjd9.MjDL4CbEVNhF-D8Sr2R6GKyyYI2nVR348u7Y1n9JMOo';
-    } else {
-      userId = '5dc917096e1c39409c4534c7';
-      token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZGM5MTcwOTZlMWMzOTQwOWM0NTM0YzciLCJpYXQiOjE1NzQwNDMyNzJ9.hlcBmrekYYeddX-VIo-_GVAJlzJnO3Zha6Y2n9Yy-co';
-    }
+  logOutUser() async {
+    final fss = FlutterSecureStorage();
+    fss.deleteAll();
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => LoginPage()),
+    );
   }
 
   @override
@@ -126,7 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           Text('MENU', style: headerStyle),
           Spacer(),
-          IconButton(icon: Icon(Icons.cached), onPressed: switchUser),
+          IconButton(icon: Icon(Icons.exit_to_app), onPressed: logOutUser),
           IconButton(icon: Icon(Icons.person), onPressed: viewProfile),
           IconButton(
               icon: Icon(Icons.refresh),

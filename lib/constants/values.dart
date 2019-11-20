@@ -3,12 +3,8 @@ import 'package:flutter/material.dart';
 //color
 Color mainColor = Color.fromRGBO(255, 204, 0, 1);
 //const String BASE_URL = 'http://10.0.2.2:8000';
-//const String BASE_URL = 'http://192.168.88.137:8000';
-const String BASE_URL = 'http://192.168.0.105:8000';
-String userId = '5dcc00806b416c12ecc5bd93';
-String token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZGNjMDA4MDZiNDE2YzEyZWNjNWJkOTMiLCJpYXQiOjE1NzM4NTkyNjZ9.7NIoCpmwIqqu9ahMzI4FoXDDaVcLXbqDEG54gYUlxIU';
-
+const String BASE_URL = 'http://192.168.88.137:8000';
+//const String BASE_URL = 'http://192.168.0.105:8000';
 //Style
 final headerStyle = TextStyle(fontSize: 22, fontWeight: FontWeight.bold);
 final headerStyleSmall = TextStyle(fontSize: 18, fontWeight: FontWeight.bold);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_food_ordering/constants/values.dart';
 import 'package:flutter_food_ordering/pages/home_page.dart';
+import 'package:flutter_food_ordering/pages/login_page.dart';
 import 'package:flutter_food_ordering/resources/api_provider.dart';
 import 'package:flutter_food_ordering/viewmodels/cart_viewmodel.dart';
 import 'package:get_it/get_it.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: custom,
         ),
-        home: MyHomePage(),
+        home: LoginPage(),
       ),
     );
   }
