@@ -52,82 +52,84 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
             ),
           ],
         ),
-        body: Container(
-          child: NotificationListener<ScrollNotification>(
-            onNotification: (notification) {
-              if (notification is ScrollEndNotification && allowJump == true) {
-                if (top < 120) {
-                  scrollController.animateTo(255, duration: Duration(milliseconds: 200), curve: Curves.linear).then((val) {
-                    allowJump = false;
-                  });
+        body: SafeArea(
+          child: Container(
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (notification) {
+                if (notification is ScrollEndNotification && allowJump == true) {
+                  if (top < 120) {
+                    scrollController.animateTo(255, duration: Duration(milliseconds: 200), curve: Curves.linear).then((val) {
+                      allowJump = false;
+                    });
+                  }
+                } else if (notification is ScrollStartNotification) {
+                  allowJump = true;
                 }
-              } else if (notification is ScrollStartNotification) {
-                allowJump = true;
-              }
-              return false;
-            },
-            child: NestedScrollView(
-              controller: scrollController,
-              headerSliverBuilder: (context, innerScrolled) => [
-                SliverOverlapAbsorber(
-                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                  child: SliverSafeArea(
-                    top: false,
-                    bottom: false,
-                    sliver: SliverPadding(
-                      padding: EdgeInsets.all(0),
-                      sliver: SliverAppBar(
-                        snap: false,
-                        automaticallyImplyLeading: false,
-                        pinned: false,
-                        floating: true,
-                        expandedHeight: 250,
-                        flexibleSpace: LayoutBuilder(builder: (context, constraint) {
-                          top = constraint.biggest.height;
-                          return FlexibleSpaceBar(
-                            background: buildImageSlideShow(context),
-                          );
-                        }),
+                return false;
+              },
+              child: NestedScrollView(
+                controller: scrollController,
+                headerSliverBuilder: (context, innerScrolled) => [
+                  SliverOverlapAbsorber(
+                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                    child: SliverSafeArea(
+                      top: false,
+                      bottom: false,
+                      sliver: SliverPadding(
+                        padding: EdgeInsets.all(0),
+                        sliver: SliverAppBar(
+                          snap: false,
+                          automaticallyImplyLeading: false,
+                          pinned: false,
+                          floating: true,
+                          expandedHeight: 250,
+                          flexibleSpace: LayoutBuilder(builder: (context, constraint) {
+                            top = constraint.biggest.height;
+                            return FlexibleSpaceBar(
+                              background: buildImageSlideShow(context),
+                            );
+                          }),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                // SliverPersistentHeader(
-                //   pinned: true,
-                //   delegate: _SliverAppBarDelegate(
-                //     TabBar(controller: tabController, tabs: <Widget>[
-                //       Tab(text: 'Foods'),
-                //       Tab(text: 'Contact'),
-                //     ]),
-                //   ),
-                // )
-              ],
-              body: Column(
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(bottom: 8.0),
-                    color: mainColor,
-                    child: TabBar(
-                      unselectedLabelColor: Colors.black54,
-                      controller: tabController,
-                      indicatorColor: Colors.black,
-                      indicatorWeight: 3,
-                      tabs: <Widget>[
-                        Tab(child: Container(child: Text('Menu', style: titleStyle))),
-                        Tab(child: Container(child: Text('Info', style: titleStyle))),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: TabBarView(
-                      controller: tabController,
-                      children: <Widget>[
-                        buildFoodList(),
-                        buildShopInfo(),
-                      ],
-                    ),
-                  ),
+                  // SliverPersistentHeader(
+                  //   pinned: true,
+                  //   delegate: _SliverAppBarDelegate(
+                  //     TabBar(controller: tabController, tabs: <Widget>[
+                  //       Tab(text: 'Foods'),
+                  //       Tab(text: 'Contact'),
+                  //     ]),
+                  //   ),
+                  // )
                 ],
+                body: Column(
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(bottom: 8.0),
+                      color: mainColor,
+                      child: TabBar(
+                        unselectedLabelColor: Colors.black54,
+                        controller: tabController,
+                        indicatorColor: Colors.black,
+                        indicatorWeight: 3,
+                        tabs: <Widget>[
+                          Tab(child: Container(child: Text('Menu', style: titleStyle))),
+                          Tab(child: Container(child: Text('Info', style: titleStyle))),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: TabBarView(
+                        controller: tabController,
+                        children: <Widget>[
+                          buildFoodList(),
+                          buildShopInfo(),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

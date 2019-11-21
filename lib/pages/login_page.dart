@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      SizedBox(height: 54),
+                      SizedBox(height: 32),
                       Text('FOOD', style: TextStyle(fontSize: 54, fontWeight: FontWeight.bold)),
                       Container(
                         width: 135,
@@ -117,7 +117,11 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: () => onLogin(context),
                         padding: EdgeInsets.all(12),
                         child: loading
-                            ? CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white))
+                            ? Container(
+                                height: 24,
+                                width: 24,
+                                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
+                              )
                             : Text('Login', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
                         color: Colors.black,
                       ),

@@ -9,29 +9,31 @@ class CartBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     MyCartViewModel cart = Provider.of<MyCartViewModel>(context);
 
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            alignment: Alignment.center,
-            width: double.infinity,
-            child: Container(
-              width: 90,
-              height: 8,
-              decoration: ShapeDecoration(shape: StadiumBorder(), color: Colors.black26),
+    return SafeArea(
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              alignment: Alignment.center,
+              width: double.infinity,
+              child: Container(
+                width: 90,
+                height: 8,
+                decoration: ShapeDecoration(shape: StadiumBorder(), color: Colors.black26),
+              ),
             ),
-          ),
-          buildTitle(cart),
-          Divider(),
-          if (cart.cartItems.length <= 0) noItemWidget() else buildItemsList(cart),
-          Divider(),
-          buildPriceInfo(cart),
-          SizedBox(height: 8),
-          addToCardButton(cart, context),
-        ],
+            buildTitle(cart),
+            Divider(),
+            if (cart.cartItems.length <= 0) noItemWidget() else buildItemsList(cart),
+            Divider(),
+            buildPriceInfo(cart),
+            SizedBox(height: 8),
+            addToCardButton(cart, context),
+          ],
+        ),
       ),
     );
     //});

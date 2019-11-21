@@ -178,7 +178,7 @@ class UserProfilePage extends StatelessWidget {
               primary: false,
               itemCount: order.orderResponse.order.length,
               itemBuilder: (BuildContext context, int index) {
-                return buildOrderItem(order.orderResponse.order[index]);
+                return buildOrderItem(order.orderResponse.order[index], context);
               },
             );
             break;
@@ -189,7 +189,7 @@ class UserProfilePage extends StatelessWidget {
     );
   }
 
-  Widget buildOrderItem(Order order) {
+  Widget buildOrderItem(Order order, context) {
     return Card(
       margin: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
       shape: RoundedRectangleBorder(side: BorderSide(width: 0.1, color: Colors.black12), borderRadius: BorderRadius.circular(8)),
@@ -203,16 +203,24 @@ class UserProfilePage extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 12),
             child: Text('Order Date: ' + DateFormat().format(order.orderDate.toLocal()), style: titleStyle),
           ),
-          ...order.items.map((item) {
-            return ListTile(
-              leading: CircleAvatar(
-                backgroundImage: NetworkImage('$BASE_URL/uploads/${item.food.image}'),
-              ),
-              trailing: Text('Price: ${item.food.price} \$'),
-              title: Text(item.food.name),
-              subtitle: Text('Quantity: ${item.quantity}'),
-            );
-          }).toList(),
+          ListView.separated(
+            separatorBuilder: (context, index) => Divider(),
+            itemCount: order.items.length,
+            shrinkWrap: true,
+            primary: false,
+            itemBuilder: (context, index) {
+              var item = order.items[index];
+              return ListTile(
+                leading: CircleAvatar(
+                  backgroundImage: NetworkImage('$BASE_URL/uploads/${item.food.image}'),
+                ),
+                trailing: Text('Price: ${item.food.price} \$'),
+                isThreeLine: false,
+                title: Text(item.food.name),
+                subtitle: Text('Quantity: ${item.quantity}'),
+              );
+            },
+          ),
           Divider(thickness: 1.5),
           ListTile(
             title: Text('Total price: ', style: titleStyle),

@@ -39,18 +39,6 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
                 buildPriceInfo(),
               ],
             ),
-            // Align(
-            //   alignment: Alignment.topRight,
-            //   child: Container(
-            //     width: double.infinity,
-            //     padding: EdgeInsets.all(4),
-            //     decoration: BoxDecoration(
-            //       color: mainColor,
-            //       borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-            //     ),
-            //     child: Text(food.shop.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-            //   ),
-            // )
           ],
         ),
       ),

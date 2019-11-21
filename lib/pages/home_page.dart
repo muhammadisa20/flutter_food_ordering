@@ -92,6 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
           valueListenable: pageIndex,
           builder: (context, page, child) {
             return BottomNavigationBar(
+              elevation: 4,
               onTap: (index) {
                 pageController.jumpToPage(index);
                 pageIndex.value = index;

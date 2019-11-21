@@ -128,6 +128,7 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
                   GoogleMap(
                     markers: Set<Marker>.of(markers.values),
                     mapType: MapType.normal,
+                    myLocationButtonEnabled: false,
                     initialCameraPosition: snapshot.data,
                     onMapCreated: (GoogleMapController controller) {
                       googleMapController = controller;
