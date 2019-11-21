@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_food_ordering/constants/app_constant.dart';
@@ -24,6 +26,7 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
   TabController tabController;
   num top = double.infinity;
   int items = 0;
+  int _current = 0;
   @override
   void initState() {
     tabController = TabController(vsync: this, length: 2);
@@ -35,6 +38,17 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
     return ChangeNotifierProvider(
       builder: (context) => FoodViewModel(shopId: widget.shop.id),
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: mainColor,
+          elevation: 0,
+          title: Text(widget.shop.name),
+          actions: <Widget>[
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+              child: CartIcon(color: Colors.white),
+            ),
+          ],
+        ),
         body: Container(
           child: NestedScrollView(
             headerSliverBuilder: (context, innerScrolled) => [
@@ -46,28 +60,12 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
                     padding: EdgeInsets.zero,
                     sliver: SliverAppBar(
                       snap: false,
-                      pinned: true,
-                      actions: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
-                          child: CartIcon(color: Colors.white),
-                        ),
-                      ],
+                      automaticallyImplyLeading: false,
+                      pinned: false,
                       floating: true,
                       expandedHeight: 250,
-                      flexibleSpace: LayoutBuilder(
-                        builder: (context, BoxConstraints constraint) {
-                          top = constraint.biggest.height;
-                          return FlexibleSpaceBar(
-                            background: Image.network(
-                              '$BASE_URL/uploads/${widget.shop.logo}',
-                              colorBlendMode: BlendMode.overlay,
-                              color: Colors.black12,
-                              fit: BoxFit.cover,
-                            ),
-                            title: Text(top > 100 ? '' : widget.shop.name, style: headerStyleSmall),
-                          );
-                        },
+                      flexibleSpace: FlexibleSpaceBar(
+                        background: buildImageSlideShow(context),
                       ),
                     ),
                   ),
@@ -85,12 +83,19 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
             ],
             body: Column(
               children: <Widget>[
-                TabBar(
-                  controller: tabController,
-                  tabs: <Widget>[
-                    Tab(child: Text('Foods', style: titleStyle)),
-                    Tab(child: Text('Info', style: titleStyle)),
-                  ],
+                Container(
+                  margin: EdgeInsets.only(bottom: 8.0),
+                  color: mainColor,
+                  child: TabBar(
+                    unselectedLabelColor: Colors.black54,
+                    controller: tabController,
+                    indicatorColor: Colors.black,
+                    indicatorWeight: 3,
+                    tabs: <Widget>[
+                      Tab(child: Container(child: Text('Menu', style: titleStyle))),
+                      Tab(child: Container(child: Text('Info', style: titleStyle))),
+                    ],
+                  ),
                 ),
                 Expanded(
                   child: TabBarView(
@@ -182,60 +187,54 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
       ),
     );
   }
-}
 
-class TestPersistentHeader implements SliverPersistentHeaderDelegate {
-  TestPersistentHeader({
-    this.minExtent,
-    @required this.maxExtent,
-  });
-  final double minExtent;
-  final double maxExtent;
-
-  @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget buildImageSlideShow(BuildContext context) {
     return Stack(
-      fit: StackFit.expand,
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.transparent, Colors.black54],
-              stops: [0.5, 1.0],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              tileMode: TileMode.repeated,
-            ),
-          ),
+      children: <Widget>[
+        CarouselSlider(
+          viewportFraction: 1.0,
+          aspectRatio: 4 / 3,
+          autoPlay: true,
+          onPageChanged: (index) => setState(() {
+            _current = index;
+          }),
+          autoPlayInterval: Duration(seconds: 3),
+          height: 250,
+          items: widget.shop.images.map((image) {
+            return Container(
+              width: double.infinity,
+              child: CachedNetworkImage(
+                imageUrl: '$BASE_URL/uploads/$image',
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              ),
+            );
+          }).toList(),
         ),
-        Positioned(
-          left: 16.0,
-          right: 16.0,
-          bottom: 16.0,
-          child: Text(
-            '$shrinkOffset',
-            style: TextStyle(
-              fontSize: 32.0,
-              color: Colors.white.withOpacity(titleOpacity(shrinkOffset)),
-            ),
-          ),
-        ),
+        buildDotIndicator(),
       ],
     );
   }
 
-  double titleOpacity(double shrinkOffset) {
-    // simple formula: fade out text as soon as shrinkOffset > 0
-    return 1.0 - max(0.0, shrinkOffset) / maxExtent;
-    // more complex formula: starts fading out text when shrinkOffset > minExtent
-    //return 1.0 - max(0.0, (shrinkOffset - minExtent)) / (maxExtent - minExtent);
+  Widget buildDotIndicator() {
+    return Positioned(
+      bottom: 16.0,
+      right: 16.0,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(widget.shop.images.length, (index) {
+          return Container(
+            width: 8.0,
+            height: 8.0,
+            margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: _current == index ? Colors.white : Color.fromRGBO(0, 0, 0, 0.4),
+            ),
+          );
+        }).toList(),
+      ),
+    );
   }
-
-  @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
-    return true;
-  }
-
-  @override
-  FloatingHeaderSnapConfiguration get snapConfiguration => null;
 }

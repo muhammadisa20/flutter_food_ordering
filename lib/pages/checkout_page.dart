@@ -170,7 +170,7 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
             ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(6)),
               child: Image.network(
-                '$BASE_URL/uploads/${cartModel.food.images[0]}',
+                '$BASE_URL/uploads/${cartModel.food.image}',
                 fit: BoxFit.cover,
                 width: 100,
                 height: 100,

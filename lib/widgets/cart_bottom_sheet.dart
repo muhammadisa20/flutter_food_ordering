@@ -63,7 +63,7 @@ class CartBottomSheet extends StatelessWidget {
         itemBuilder: (context, index) {
           return Card(
             child: ListTile(
-              leading: CircleAvatar(backgroundImage: NetworkImage('$BASE_URL/uploads/${cart.cartItems[index].food.images[0]}')),
+              leading: CircleAvatar(backgroundImage: NetworkImage('$BASE_URL/uploads/${cart.cartItems[index].food.image}')),
               title: Text('${cart.cartItems[index].food.name}', style: subtitleStyle),
               subtitle: Text('\$ ${cart.cartItems[index].food.price}'),
               trailing: Text('x ${cart.cartItems[index].quantity}', style: subtitleStyle),

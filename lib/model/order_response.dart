@@ -26,7 +26,7 @@ class Order {
   String id;
   DateTime orderDate;
   List<Item> items;
-  double totalPrice;
+  num totalPrice;
   Customer shop;
   Customer customer;
   DateTime createdAt;
@@ -49,7 +49,7 @@ class Order {
         id: json["_id"] == null ? null : json["_id"],
         orderDate: json["order_date"] == null ? null : DateTime.parse(json["order_date"]),
         items: json["items"] == null ? null : List<Item>.from(json["items"].map((x) => Item.fromJson(x))),
-        totalPrice: json["total_price"] == null ? null : json["total_price"].toDouble(),
+        totalPrice: json["total_price"] == null ? null : json["total_price"],
         shop: json["shop"] == null ? null : Customer.fromJson(json["shop"]),
         customer: json["customer"] == null ? null : Customer.fromJson(json["customer"]),
         createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
@@ -119,23 +119,23 @@ class Item {
 }
 
 class Food {
-  List<String> images;
   String id;
   String name;
   String description;
-  double price;
-  int rating;
+  num price;
+  String image;
+  num rating;
   String shop;
   DateTime createdAt;
   DateTime updatedAt;
   int v;
 
   Food({
-    this.images,
     this.id,
     this.name,
     this.description,
     this.price,
+    this.image,
     this.rating,
     this.shop,
     this.createdAt,
@@ -144,11 +144,11 @@ class Food {
   });
 
   factory Food.fromJson(Map<String, dynamic> json) => Food(
-        images: json["images"] == null ? null : List<String>.from(json["images"].map((x) => x)),
         id: json["_id"] == null ? null : json["_id"],
         name: json["name"] == null ? null : json["name"],
         description: json["description"] == null ? null : json["description"],
-        price: json["price"] == null ? null : json["price"].toDouble(),
+        price: json["price"] == null ? null : json["price"],
+        image: json["image"] == null ? 'Placeholder-food.jpg' : json["image"],
         rating: json["rating"] == null ? null : json["rating"],
         shop: json["shop"] == null ? null : json["shop"],
         createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
@@ -157,11 +157,11 @@ class Food {
       );
 
   Map<String, dynamic> toJson() => {
-        "images": images == null ? null : List<dynamic>.from(images.map((x) => x)),
         "_id": id == null ? null : id,
         "name": name == null ? null : name,
         "description": description == null ? null : description,
         "price": price == null ? null : price,
+        "image": image == null ? null : image,
         "rating": rating == null ? null : rating,
         "shop": shop == null ? null : shop,
         "createdAt": createdAt == null ? null : createdAt.toIso8601String(),

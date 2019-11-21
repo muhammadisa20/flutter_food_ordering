@@ -64,7 +64,7 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
         borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
         child: CachedNetworkImage(
           fit: BoxFit.cover,
-          imageUrl: "$BASE_URL/uploads/${food.images[0]}",
+          imageUrl: "$BASE_URL/uploads/${food.image}",
           placeholder: (context, url) => Center(child: CircularProgressIndicator()),
           errorWidget: (context, url, error) => Icon(Icons.error),
         ),

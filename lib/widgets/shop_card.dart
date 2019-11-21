@@ -55,7 +55,7 @@ class ShopCard extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
         child: CachedNetworkImage(
           fit: BoxFit.cover,
-          imageUrl: "$BASE_URL/uploads/${shop.logo}",
+          imageUrl: "$BASE_URL/uploads/${shop.images[0]}",
           placeholder: (context, url) => Center(child: CircularProgressIndicator()),
           errorWidget: (context, url, error) => Icon(Icons.error),
         ),

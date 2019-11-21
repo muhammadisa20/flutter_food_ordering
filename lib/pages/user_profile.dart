@@ -206,7 +206,7 @@ class UserProfilePage extends StatelessWidget {
           ...order.items.map((item) {
             return ListTile(
               leading: CircleAvatar(
-                backgroundImage: NetworkImage('$BASE_URL/uploads/${item.food.images[0]}'),
+                backgroundImage: NetworkImage('$BASE_URL/uploads/${item.food.image}'),
               ),
               trailing: Text('Price: ${item.food.price} \$'),
               title: Text(item.food.name),

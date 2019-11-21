@@ -23,7 +23,7 @@ class ShopResponse {
 }
 
 class Shop {
-  String logo;
+  List<String> images;
   String id;
   String name;
   String email;
@@ -35,7 +35,7 @@ class Shop {
   int v;
 
   Shop({
-    this.logo,
+    this.images,
     this.id,
     this.name,
     this.email,
@@ -48,7 +48,7 @@ class Shop {
   });
 
   factory Shop.fromJson(Map<String, dynamic> json) => Shop(
-        logo: json["logo"] == null ? null : json["logo"],
+        images: json["images"] == null ? null : List<String>.from(json["images"].map((x) => x)),
         id: json["_id"] == null ? null : json["_id"],
         name: json["name"] == null ? null : json["name"],
         email: json["email"] == null ? null : json["email"],
@@ -61,7 +61,7 @@ class Shop {
       );
 
   Map<String, dynamic> toJson() => {
-        "logo": logo == null ? null : logo,
+        "images": images == null ? null : List<dynamic>.from(images.map((x) => x)),
         "_id": id == null ? null : id,
         "name": name == null ? null : name,
         "email": email == null ? null : email,
