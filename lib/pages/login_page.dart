@@ -54,6 +54,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
+      appBar: AppBar(elevation: 0, backgroundColor: mainColor),
       body: ListView(
         controller: scrollController,
         children: <Widget>[

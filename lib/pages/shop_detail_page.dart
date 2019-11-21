@@ -73,8 +73,9 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
                   handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                   child: SliverSafeArea(
                     top: false,
+                    bottom: false,
                     sliver: SliverPadding(
-                      padding: EdgeInsets.zero,
+                      padding: EdgeInsets.all(0),
                       sliver: SliverAppBar(
                         snap: false,
                         automaticallyImplyLeading: false,

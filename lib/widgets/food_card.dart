@@ -35,7 +35,7 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
               children: <Widget>[
                 buildImage(),
                 buildTitle(),
-                buildRating(),
+                //buildRating(),
                 buildPriceInfo(),
               ],
             ),
@@ -84,9 +84,10 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
             overflow: TextOverflow.ellipsis,
             style: titleStyle,
           ),
+          SizedBox(height: 4),
           Text(
             food.description,
-            maxLines: 2,
+            maxLines: food.name.length > 25 ? 1 : 2,
             overflow: TextOverflow.ellipsis,
             style: infoStyle,
           ),

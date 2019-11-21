@@ -72,7 +72,7 @@ class ShopCard extends StatelessWidget {
         children: <Widget>[
           Text(shop.name, style: titleStyle, maxLines: 2, overflow: TextOverflow.ellipsis),
           SizedBox(height: 4),
-          Text(shop.description, style: infoStyle, maxLines: shop.name.length > 15 ? 1 : 2, overflow: TextOverflow.ellipsis),
+          Text(shop.description, style: infoStyle, maxLines: shop.name.length > 25 ? 1 : 2, overflow: TextOverflow.ellipsis),
         ],
       ),
     );
