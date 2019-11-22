@@ -25,7 +25,8 @@ class ShopDetailPage extends StatefulWidget {
 class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProviderStateMixin {
   TabController tabController;
   ScrollController scrollController;
-  num top = double.infinity;
+  num currentSliverHeight = double.infinity;
+  num sliverEndHeight = 0;
   int items = 0;
   int _current = 0;
   bool allowJump = true;
@@ -43,6 +44,7 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: mainColor,
+          centerTitle: true,
           elevation: 0,
           title: Text(widget.shop.name),
           actions: <Widget>[
@@ -57,7 +59,7 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
             child: NotificationListener<ScrollNotification>(
               onNotification: (notification) {
                 if (notification is ScrollEndNotification && allowJump == true) {
-                  if (top < 120) {
+                  if (currentSliverHeight < 120 && scrollController.offset != scrollController.position.maxScrollExtent) {
                     scrollController.animateTo(255, duration: Duration(milliseconds: 200), curve: Curves.linear).then((val) {
                       allowJump = false;
                     });
@@ -84,7 +86,7 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
                           floating: true,
                           expandedHeight: 250,
                           flexibleSpace: LayoutBuilder(builder: (context, constraint) {
-                            top = constraint.biggest.height;
+                            currentSliverHeight = constraint.maxHeight;
                             return FlexibleSpaceBar(
                               background: buildImageSlideShow(context),
                             );
@@ -184,6 +186,7 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
           ),
           Card(
             child: ListTile(
+              isThreeLine: true,
               title: Text('Description'),
               subtitle: Text(widget.shop.description),
             ),

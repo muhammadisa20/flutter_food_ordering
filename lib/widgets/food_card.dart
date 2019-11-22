@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_food_ordering/constants/app_constant.dart';
 import 'package:flutter_food_ordering/model/foods_response.dart';
+import 'package:flutter_food_ordering/pages/shop_detail_page.dart';
 import 'package:flutter_food_ordering/viewmodels/cart_viewmodel.dart';
 import 'package:flutter_food_ordering/widgets/cart_bottom_sheet.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -9,7 +10,8 @@ import 'package:provider/provider.dart';
 
 class FoodCard extends StatefulWidget {
   final Food food;
-  FoodCard(this.food);
+  final bool viewShop;
+  FoodCard(this.food, {this.viewShop});
 
   _FoodCardState createState() => _FoodCardState();
 }
@@ -124,18 +126,24 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
             shape: roundedRectangle4,
             color: mainColor,
             child: InkWell(
-              onTap: addItemToCard,
+              onTap: widget.viewShop != null ? viewShop : addItemToCard,
               splashColor: Colors.white70,
               customBorder: roundedRectangle4,
               child: Padding(
                 padding: const EdgeInsets.all(4.0),
-                child: Icon(Icons.add_shopping_cart),
+                child: Icon(widget.viewShop != null ? Icons.shop : Icons.add_shopping_cart),
               ),
             ),
           )
         ],
       ),
     );
+  }
+
+  viewShop() {
+//    Navigator.of(context).push(
+//      MaterialPageRoute(builder: (context) => ShopDetailPage(widget.food.shop)),
+//    );
   }
 
   addItemToCard() {
