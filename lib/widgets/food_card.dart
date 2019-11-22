@@ -10,8 +10,7 @@ import 'package:provider/provider.dart';
 
 class FoodCard extends StatefulWidget {
   final Food food;
-  final bool viewShop;
-  FoodCard(this.food, {this.viewShop});
+  FoodCard(this.food);
 
   _FoodCardState createState() => _FoodCardState();
 }
@@ -37,7 +36,7 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
               children: <Widget>[
                 buildImage(),
                 buildTitle(),
-                //buildRating(),
+                buildRating(),
                 buildPriceInfo(),
               ],
             ),
@@ -126,12 +125,12 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
             shape: roundedRectangle4,
             color: mainColor,
             child: InkWell(
-              onTap: widget.viewShop != null ? viewShop : addItemToCard,
+              onTap: addItemToCard,
               splashColor: Colors.white70,
               customBorder: roundedRectangle4,
               child: Padding(
                 padding: const EdgeInsets.all(4.0),
-                child: Icon(widget.viewShop != null ? Icons.shop : Icons.add_shopping_cart),
+                child: Icon(Icons.add_shopping_cart),
               ),
             ),
           )
@@ -140,15 +139,8 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
     );
   }
 
-  viewShop() {
-//    Navigator.of(context).push(
-//      MaterialPageRoute(builder: (context) => ShopDetailPage(widget.food.shop)),
-//    );
-  }
-
   addItemToCard() {
     bool isAddSuccess = Provider.of<MyCartViewModel>(context).addItem(CartItem(food: food, quantity: 1));
-
     if (isAddSuccess) {
       final snackBar = SnackBar(
         content: Text('${food.name} added to cart'),

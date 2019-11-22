@@ -29,12 +29,6 @@ class _MyHomePageState extends State<MyHomePage> {
   FoodViewModel foodViewModel;
   ShopViewModel shopViewModel;
   PageController pageController = PageController(keepPage: true);
-  ValueNotifier<int> pageIndex = ValueNotifier(0);
-
-  List get pages => [
-        buildShopList(),
-        buildFoodList(),
-      ];
 
   viewProfile() {
     Navigator.of(context).push(
@@ -62,11 +56,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(builder: (context) => FoodViewModel()),
-        ChangeNotifierProvider(builder: (context) => ShopViewModel()),
-      ],
+    return ChangeNotifierProvider(
+      builder: (context) => ShopViewModel(),
       child: Scaffold(
         body: Container(
           margin: EdgeInsets.only(left: 12, right: 12, top: 12),
@@ -75,36 +66,9 @@ class _MyHomePageState extends State<MyHomePage> {
               buildAppBar(),
               buildFoodFilter(),
               Divider(),
-              Expanded(
-                child: PageView.builder(
-                  itemCount: 2,
-                  controller: pageController,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return pages[index];
-                  },
-                ),
-              )
+              Expanded(child: buildShopList()),
             ],
           ),
-        ),
-        bottomNavigationBar: ValueListenableBuilder(
-          valueListenable: pageIndex,
-          builder: (context, page, child) {
-            return BottomNavigationBar(
-              elevation: 4,
-              onTap: (index) {
-                pageController.jumpToPage(index);
-                pageIndex.value = index;
-              },
-              selectedItemColor: mainColor,
-              currentIndex: page,
-              items: [
-                BottomNavigationBarItem(icon: Icon(Icons.fastfood), title: Text('Shops')),
-                BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), title: Text('Foods')),
-              ],
-            );
-          },
         ),
       ),
     );
@@ -155,38 +119,6 @@ class _MyHomePageState extends State<MyHomePage> {
           );
         }),
       ),
-    );
-  }
-
-  Widget buildFoodList() {
-    return Consumer<FoodViewModel>(
-      builder: (context, food, child) {
-        foodViewModel = food;
-        switch (food.state) {
-          case ViewState.error:
-            return CenterLoadingError(Text(food.errorMessage));
-            break;
-          case ViewState.loading:
-            return CenterLoadingError(CircularProgressIndicator());
-            break;
-          case ViewState.ready:
-            return GridView.count(
-              padding: EdgeInsets.zero,
-              childAspectRatio: 0.65,
-              mainAxisSpacing: 4,
-              crossAxisSpacing: 4,
-              shrinkWrap: true,
-              crossAxisCount: 2,
-              physics: BouncingScrollPhysics(),
-              children: food.foodResponse.foods.map((food) {
-                return FoodCard(food);
-              }).toList(),
-            );
-            break;
-          default:
-            return Container();
-        }
-      },
     );
   }
 

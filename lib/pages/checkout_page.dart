@@ -33,7 +33,8 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
     apiProvider.orderFood(cart).then((success) {
       if (success) {
         Toast.show('Order success, You can view them in your order', context, duration: 5);
-        Navigator.pop(context);
+        int count = 0;
+        Navigator.of(context).popUntil((_) => count++ >= 2);
       }
       isLoading.value = false;
     }).catchError((err) {
@@ -232,7 +233,7 @@ class _CheckOutPageState extends State<CheckOutPage> with SingleTickerProviderSt
                     height: 45,
                     width: 70,
                     child: Text(
-                      '\$ ${cartModel.food.price}',
+                      '\$ ${cartModel.food.price.toDouble()}',
                       style: titleStyle,
                       textAlign: TextAlign.end,
                     ),

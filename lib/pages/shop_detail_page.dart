@@ -25,6 +25,7 @@ class ShopDetailPage extends StatefulWidget {
 class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProviderStateMixin {
   TabController tabController;
   ScrollController scrollController;
+  FoodViewModel foodViewModel;
   num currentSliverHeight = double.infinity;
   num sliverEndHeight = 0;
   int items = 0;
@@ -95,15 +96,6 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
                       ),
                     ),
                   ),
-                  // SliverPersistentHeader(
-                  //   pinned: true,
-                  //   delegate: _SliverAppBarDelegate(
-                  //     TabBar(controller: tabController, tabs: <Widget>[
-                  //       Tab(text: 'Foods'),
-                  //       Tab(text: 'Contact'),
-                  //     ]),
-                  //   ),
-                  // )
                 ],
                 body: Column(
                   children: <Widget>[
@@ -141,34 +133,41 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
   }
 
   Widget buildFoodList() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8),
-      child: Consumer<FoodViewModel>(
-        builder: (context, food, child) {
-          switch (food.state) {
-            case ViewState.error:
-              return CenterLoadingError(Text(food.errorMessage));
-              break;
-            case ViewState.loading:
-              return CenterLoadingError(CircularProgressIndicator());
-              break;
-            case ViewState.ready:
-              return GridView.count(
-                padding: EdgeInsets.only(top: 16),
-                childAspectRatio: 0.65,
-                mainAxisSpacing: 4,
-                crossAxisSpacing: 4,
-                shrinkWrap: true,
-                crossAxisCount: 2,
-                children: food.foodShopResponse.foods.map((food) {
-                  return FoodCard(food);
-                }).toList(),
-              );
-              break;
-            default:
-              return Container();
-          }
-        },
+    return RefreshIndicator(
+      onRefresh: () async {
+        foodViewModel.getFoodsByShop(widget.shop.id);
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 8),
+        child: Consumer<FoodViewModel>(
+          builder: (context, food, child) {
+            foodViewModel = food;
+            switch (food.state) {
+              case ViewState.error:
+                return CenterLoadingError(Text(food.errorMessage));
+                break;
+              case ViewState.loading:
+                return CenterLoadingError(CircularProgressIndicator());
+                break;
+              case ViewState.ready:
+                return GridView.count(
+                  padding: EdgeInsets.only(top: 16),
+                  childAspectRatio: 0.65,
+                  mainAxisSpacing: 4,
+                  crossAxisSpacing: 4,
+                  physics: BouncingScrollPhysics(),
+                  shrinkWrap: true,
+                  crossAxisCount: 2,
+                  children: food.foodShopResponse.foods.map((food) {
+                    return FoodCard(food);
+                  }).toList(),
+                );
+                break;
+              default:
+                return Container();
+            }
+          },
+        ),
       ),
     );
   }

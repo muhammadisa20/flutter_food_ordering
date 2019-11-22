@@ -214,7 +214,7 @@ class UserProfilePage extends StatelessWidget {
                 leading: CircleAvatar(
                   backgroundImage: NetworkImage('$BASE_URL/uploads/${item.food.image}'),
                 ),
-                trailing: Text('Price: ${item.food.price} \$'),
+                trailing: Text('Price: ${item.food.price.toDouble()} \$'),
                 isThreeLine: false,
                 title: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -227,7 +227,7 @@ class UserProfilePage extends StatelessWidget {
           Divider(thickness: 1.5),
           ListTile(
             title: Text('Total price: ', style: titleStyle),
-            trailing: Text('${order.totalPrice} \$', style: titleStyle),
+            trailing: Text('${order.totalPrice.toDouble()} \$', style: titleStyle),
           )
         ],
       ),
