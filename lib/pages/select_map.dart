@@ -35,7 +35,7 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
   ValueNotifier<String> locationString = ValueNotifier<String>('no data');
 
   Future<CameraPosition> getCurrentLocation() async {
-    gpsLocation = await geoLocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    gpsLocation = await geoLocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
     if (widget.lat != null) {
       getLocationAddress(widget.lat, widget.lng);
       currentPosition = CameraPosition(

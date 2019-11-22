@@ -216,7 +216,10 @@ class UserProfilePage extends StatelessWidget {
                 ),
                 trailing: Text('Price: ${item.food.price} \$'),
                 isThreeLine: false,
-                title: Text(item.food.name),
+                title: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text(item.food.name),
+                ),
                 subtitle: Text('Quantity: ${item.quantity}'),
               );
             },

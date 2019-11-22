@@ -116,7 +116,7 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(
-            '\$ ${food.price}',
+            '\$ ${food.price.toDouble()}',
             style: titleStyle,
           ),
           Card(

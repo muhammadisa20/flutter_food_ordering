@@ -19,28 +19,13 @@ class ShopCard extends StatelessWidget {
               MaterialPageRoute(builder: (context) => ShopDetailPage(shop)),
             );
           },
-          child: Stack(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  buildImage(context),
-                  buildShopInfo(),
-                  buildRating(),
-                ],
-              ),
-              Align(
-                alignment: Alignment.topRight,
-                child: Container(
-                  padding: EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: mainColor,
-                    borderRadius: BorderRadius.only(topRight: Radius.circular(12)),
-                  ),
-                  child: Text(shop.type),
-                ),
-              )
+              buildImage(context),
+              buildShopInfo(),
+              buildRating(),
             ],
           ),
         ),
@@ -51,14 +36,31 @@ class ShopCard extends StatelessWidget {
   Widget buildImage(context) {
     return Container(
       height: MediaQuery.of(context).size.width / 2.5,
-      child: ClipRRect(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-        child: CachedNetworkImage(
-          fit: BoxFit.cover,
-          imageUrl: "$BASE_URL/uploads/${shop.images[0]}",
-          placeholder: (context, url) => Center(child: CircularProgressIndicator()),
-          errorWidget: (context, url, error) => Icon(Icons.error),
-        ),
+      child: Stack(
+        children: <Widget>[
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+              child: CachedNetworkImage(
+                fit: BoxFit.cover,
+                imageUrl: "$BASE_URL/uploads/${shop.images[0]}",
+                placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.topRight,
+            child: Container(
+              padding: EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: mainColor,
+                borderRadius: BorderRadius.only(topRight: Radius.circular(12), bottomLeft: Radius.circular(12)),
+              ),
+              child: Text(shop.type),
+            ),
+          )
+        ],
       ),
     );
   }
