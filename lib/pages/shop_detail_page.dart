@@ -41,6 +41,7 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
+    var height = MediaQuery.of(context).size.height;
     return ChangeNotifierProvider(
       builder: (context) => FoodViewModel(shopId: widget.shop.id),
       child: Scaffold(
@@ -61,7 +62,7 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
             child: NotificationListener<ScrollNotification>(
               onNotification: (notification) {
                 if (notification is ScrollEndNotification && allowJump == true) {
-                  if (currentSliverHeight < 120 && scrollController.offset != scrollController.position.maxScrollExtent) {
+                  if (currentSliverHeight < height / 8 && scrollController.offset != scrollController.position.maxScrollExtent) {
                     scrollController.animateTo(255, duration: Duration(milliseconds: 200), curve: Curves.linear).then((val) {
                       allowJump = false;
                     });
@@ -86,7 +87,7 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
                           automaticallyImplyLeading: false,
                           pinned: false,
                           floating: true,
-                          expandedHeight: 250,
+                          expandedHeight: height / 4,
                           flexibleSpace: LayoutBuilder(builder: (context, constraint) {
                             currentSliverHeight = constraint.maxHeight;
                             return FlexibleSpaceBar(
@@ -156,7 +157,6 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
                   childAspectRatio: 0.65,
                   mainAxisSpacing: 4,
                   crossAxisSpacing: 4,
-                  physics: BouncingScrollPhysics(),
                   shrinkWrap: true,
                   crossAxisCount: 2,
                   children: food.foodShopResponse.foods.map((food) {

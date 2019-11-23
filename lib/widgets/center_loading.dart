@@ -13,7 +13,7 @@ class CenterLoadingError extends StatelessWidget {
     }
     return Container(
       alignment: Alignment.center,
-      margin: EdgeInsets.symmetric(vertical: 100),
+      margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height / 8),
       child: child,
     );
   }

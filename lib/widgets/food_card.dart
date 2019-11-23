@@ -77,7 +77,7 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
           SizedBox(height: 4),
           Text(
             food.description,
-            maxLines: food.name.length > 25 ? 1 : 2,
+            maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: infoStyle,
           ),
@@ -131,7 +131,7 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
               customBorder: roundedRectangle4,
               child: Padding(
                 padding: const EdgeInsets.all(4.0),
-                child: Icon(Icons.add_shopping_cart),
+                child: Icon(Icons.add_shopping_cart, size: 20),
               ),
             ),
           )

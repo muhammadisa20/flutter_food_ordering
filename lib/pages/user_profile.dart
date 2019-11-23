@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_food_ordering/constants/base_url.dart';
+import 'package:flutter_food_ordering/pages/order_history_page.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
 import 'package:flutter_food_ordering/constants/app_constant.dart';
@@ -37,6 +38,13 @@ class UserProfilePage extends StatelessWidget {
     }
   }
 
+  void viewOrderHistory(context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => OrderHistoryPage()),
+    );
+  }
+
   void changeDeliveryLocation(context, user) async {
     await Navigator.push(
       context,
@@ -51,11 +59,8 @@ class UserProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(builder: (_) => UserViewModel()),
-        ChangeNotifierProvider(builder: (_) => OrderViewModel()),
-      ],
+    return ChangeNotifierProvider(
+      builder: (_) => UserViewModel(),
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: mainColor,
@@ -69,10 +74,6 @@ class UserProfilePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              // Container(
-              //   margin: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-              //   child: Text('User Info', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-              // ),
               Consumer<UserViewModel>(
                 builder: (context, user, child) {
                   userResponse = user.userResponse;
@@ -91,11 +92,6 @@ class UserProfilePage extends StatelessWidget {
                   }
                 },
               ),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-                child: Text('Order History', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-              ),
-              buildUserOrderHistoryList(),
             ],
           ),
         ),
@@ -157,79 +153,14 @@ class UserProfilePage extends StatelessWidget {
               trailing: IconButton(icon: Icon(Icons.edit), onPressed: null),
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget buildUserOrderHistoryList() {
-    return Consumer<OrderViewModel>(
-      builder: (context, order, child) {
-        switch (order.state) {
-          case ViewState.error:
-            return CenterLoadingError(Text(order.errorMessage));
-            break;
-          case ViewState.loading:
-            return CenterLoadingError(CircularProgressIndicator());
-            break;
-          case ViewState.ready:
-            order.orderResponse.order = order.orderResponse.order.reversed.toList();
-            return ListView.builder(
-              shrinkWrap: true,
-              primary: false,
-              itemCount: order.orderResponse.order.length,
-              itemBuilder: (BuildContext context, int index) {
-                return buildOrderItem(order.orderResponse.order[index], context);
-              },
-            );
-            break;
-          default:
-            return Container();
-        }
-      },
-    );
-  }
-
-  Widget buildOrderItem(Order order, context) {
-    return Card(
-      margin: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-      shape: RoundedRectangleBorder(side: BorderSide(width: 0.1, color: Colors.black12), borderRadius: BorderRadius.circular(8)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            decoration: BoxDecoration(color: mainColor, borderRadius: BorderRadius.vertical(top: Radius.circular(8))),
-            width: double.infinity,
-            alignment: Alignment.center,
-            padding: EdgeInsets.symmetric(vertical: 12),
-            child: Text('Order Date: ' + DateFormat().format(order.orderDate.toLocal()), style: titleStyle),
+          Card(
+            child: ListTile(
+              onTap: () => viewOrderHistory(context),
+              leading: Icon(Icons.history),
+              title: Text('Order history'),
+              trailing: Icon(Icons.arrow_forward),
+            ),
           ),
-          ListView.separated(
-            separatorBuilder: (context, index) => Divider(),
-            itemCount: order.items.length,
-            shrinkWrap: true,
-            primary: false,
-            itemBuilder: (context, index) {
-              var item = order.items[index];
-              return ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: NetworkImage('$BASE_URL/uploads/${item.food.image}'),
-                ),
-                trailing: Text('Price: ${item.food.price.toDouble()} \$'),
-                isThreeLine: false,
-                title: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text(item.food.name),
-                ),
-                subtitle: Text('Quantity: ${item.quantity}'),
-              );
-            },
-          ),
-          Divider(thickness: 1.5),
-          ListTile(
-            title: Text('Total price: ', style: titleStyle),
-            trailing: Text('${order.totalPrice.toDouble()} \$', style: titleStyle),
-          )
         ],
       ),
     );
@@ -240,14 +171,12 @@ class AppBarAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var user = Provider.of<UserViewModel>(context);
-    var order = Provider.of<OrderViewModel>(context);
     return Row(
       children: <Widget>[
         IconButton(
           icon: Icon(Icons.refresh),
           onPressed: () {
             user.getUserInfo();
-            order.getAllOrdersByUser();
           },
         ),
       ],
