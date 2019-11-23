@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_food_ordering/constants/app_constant.dart';
+import 'package:flutter_food_ordering/constants/base_url.dart';
 import 'package:flutter_food_ordering/main.dart';
 import 'package:flutter_food_ordering/resources/api_provider.dart';
 import 'package:flutter_food_ordering/viewmodels/cart_viewmodel.dart';

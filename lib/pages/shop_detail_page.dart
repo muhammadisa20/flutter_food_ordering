@@ -5,6 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_food_ordering/constants/app_constant.dart';
+import 'package:flutter_food_ordering/constants/base_url.dart';
 import 'package:flutter_food_ordering/model/shop_response.dart';
 import 'package:flutter_food_ordering/viewmodels/base_model.dart';
 import 'package:flutter_food_ordering/viewmodels/cart_viewmodel.dart';
