@@ -70,7 +70,7 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
         children: <Widget>[
           Text(
             food.name,
-            maxLines: 2,
+            maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: titleStyle,
           ),

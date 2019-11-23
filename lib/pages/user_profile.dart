@@ -101,7 +101,7 @@ class UserProfilePage extends StatelessWidget {
 
   Widget buildProfile(UserResponse userResponse, UserViewModel user, context) {
     return Container(
-      padding: EdgeInsets.all(12),
+      padding: EdgeInsets.all(8),
       child: Column(
         children: <Widget>[
           ClipRRect(
